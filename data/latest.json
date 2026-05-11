@@ -1,15 +1,15 @@
 {
   "meta": {
     "generated": "2026-05-11",
-    "current_week": "2026-KW20"
+    "current_week": "2026-KW19"
   },
   "current_week": {
-    "kw_label": "2026-KW20",
-    "strom_eur_mwh": 119.26,
-    "brent_eur_bbl": NaN,
-    "ttf": NaN,
-    "ttf_ct_kwh": NaN,
-    "heizoel_eur_liter": NaN
+    "kw_label": "2026-KW19",
+    "strom_eur_mwh": 113.927,
+    "brent_eur_bbl": 89.904,
+    "ttf": 45.335,
+    "ttf_ct_kwh": 4.533,
+    "heizoel_eur_liter": 0.884
   },
   "fuel_prices": {
     "e5": 2.002,
