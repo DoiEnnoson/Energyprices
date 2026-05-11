@@ -1,6 +1,6 @@
 """
-generate_charts.py – Charts nach data/charts/ speichern (werden per Git committed)
-Email referenziert sie als GitHub Raw URLs – kein Base64-Bloat.
+generate_charts.py – Charts im Mockup-Stil
+Ausgabe nach data/charts/ (wird per Git committed, dann per GitHub Raw URL referenziert)
 """
 
 import json, logging
@@ -9,7 +9,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+import matplotlib.ticker as mticker
 import pandas as pd
 
 import sys
@@ -19,147 +19,233 @@ import config as C
 log = logging.getLogger(__name__)
 ROOT = Path(__file__).parent.parent
 
-BG   = C.COLORS["background"]
-SURF = C.COLORS["surface"]
-TEXT = C.COLORS["text"]
-SUB  = C.COLORS["subtext"]
-GRID = C.COLORS["grid"]
+# ── Stil: hell, editorial, monospace ──────────────────────────────
+BG      = "#ffffff"
+SURFACE = "#f4f3ef"
+TEXT    = "#1a1a1a"
+SUB     = "#888888"
+GRID    = "#ebe9e3"
+BORDER  = "#d8d5cd"
+
+# Farben wie Mockup: Strom schwarz, Fossile in Grauabstufungen
+COL = {
+    "strom":  "#1a1a1a",
+    "brent":  "#9ca3af",
+    "ttf":    "#c4b5a0",
+    "coal":   "#d1d5db",
+    "dark":   "#1a1a1a",
+    "mid":    "#6b7280",
+    "light":  "#9ca3af",
+    "pale":   "#d1d5db",
+}
+
+MONO = "monospace"
 
 
-def dark(ax, fig):
+def style_ax(ax, fig):
     fig.patch.set_facecolor(BG)
-    ax.set_facecolor(SURF)
+    ax.set_facecolor(BG)
     ax.tick_params(colors=SUB, labelsize=9)
     for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
-    for sp in ["left", "bottom"]: ax.spines[sp].set_color(GRID)
-    ax.grid(True, color=GRID, linestyle="--", linewidth=0.6, alpha=0.7)
-    ax.title.set_color(TEXT)
-    ax.xaxis.label.set_color(SUB)
-    ax.yaxis.label.set_color(SUB)
+    for sp in ["left", "bottom"]: ax.spines[sp].set_color(BORDER)
+    ax.grid(True, color=GRID, linestyle="-", linewidth=0.5, alpha=1.0)
+    ax.set_axisbelow(True)
 
 
 def save(fig, path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(str(path), dpi=120, bbox_inches="tight", facecolor=BG, edgecolor="none")
+    fig.savefig(str(path), dpi=110, bbox_inches="tight", facecolor=BG, edgecolor="none")
     plt.close(fig)
-    log.info(f"  → {path}")
+    log.info(f"  → {path.name}")
 
+
+# ── Chart 1: Index-Zeitreihe ───────────────────────────────────────
 
 def chart_index(idx_csv: Path, out: Path):
-    df = pd.read_csv(str(idx_csv), parse_dates=["date"])
+    df = pd.read_csv(str(idx_csv))
     if df.empty: return
 
     series = [
-        ("strom_eur_mwh_idx",      "Strom Day-Ahead DE",    C.COLORS["electricity"]),
-        ("brent_eur_bbl_idx",      "Brent Rohöl (EUR/bbl)", C.COLORS["brent"]),
-        ("ttf_idx",                "Erdgas TTF (EUR/MWh)",  C.COLORS["ttf"]),
-        ("heizoel_eur_liter_idx",  "Heizöl (EUR/L)",        C.COLORS["heating_oil"]),
+        ("strom_eur_mwh_idx", "Strom Day-Ahead DE",  COL["strom"],  2.0,  []),
+        ("brent_eur_bbl_idx", "Brent Rohöl",          COL["brent"],  1.5,  []),
+        ("ttf_idx",           "Erdgas TTF",            COL["ttf"],    1.5,  []),
+        ("coal_eur_t_idx",    "Kohle API2",            COL["coal"],   1.5,  [4, 3]),
     ]
 
-    fig, ax = plt.subplots(figsize=(12, 6), dpi=120)
-    dark(ax, fig)
+    fig, ax = plt.subplots(figsize=(11, 5), dpi=110)
+    style_ax(ax, fig)
 
-    for col, label, color in series:
+    labels = df["kw_label"].tolist()
+    x = range(len(labels))
+
+    for col, label, color, lw, dash in series:
         if col not in df.columns: continue
-        s = df[["date", col]].dropna()
-        ax.plot(s["date"], s[col], label=label, linewidth=1.8, color=color, alpha=0.9)
-        last = s.iloc[-1]
-        ax.text(last["date"], last[col], f"  {last[col]:.0f}", color=color, fontsize=8, va="center")
+        vals = df[col].tolist()
+        ax.plot(x, vals, label=label, color=color, linewidth=lw,
+                linestyle=(0, dash) if dash else "solid")
+        # letzter Wert
+        last = df[col].dropna()
+        if not last.empty:
+            ax.text(len(last)-1 + 0.2, last.iloc[-1],
+                    f"{last.iloc[-1]:.0f}", color=color, fontsize=8,
+                    va="center", fontfamily=MONO)
 
-    ax.axhline(100, color="#ffffff", linewidth=0.7, linestyle="--", alpha=0.3)
-    ax.set_title("Energiepreise Deutschland – Index 100 = 1. Januar 2026",
-                 fontsize=13, fontweight="bold", pad=12)
-    ax.set_ylabel("Index")
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d.%m."))
-    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=0, interval=2))
-    plt.setp(ax.xaxis.get_majorticklabels(), rotation=35, ha="right")
-    ax.legend(loc="upper left", fontsize=9, frameon=True,
-              facecolor=SURF, edgecolor=GRID, labelcolor=TEXT).get_frame().set_alpha(0.9)
-    fig.text(0.5, 0.01, "Energy-Charts/ENTSO-E · Yahoo Finance · Tageswerte",
-             ha="center", fontsize=7.5, color=SUB)
-    fig.tight_layout(rect=[0, 0.04, 1, 1])
+    ax.axhline(100, color=BORDER, linewidth=0.8, linestyle="--")
+
+    step = max(1, len(labels) // 10)
+    ax.set_xticks(list(range(0, len(labels), step)))
+    ax.set_xticklabels(labels[::step], rotation=35, ha="right",
+                       fontsize=8, fontfamily=MONO)
+    ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%g"))
+    ax.tick_params(axis="y", labelsize=8)
+    for tick in ax.get_yticklabels():
+        tick.set_fontfamily(MONO)
+
+    # Legende manuell (wie Mockup)
+    legend_items = [(l, c, d) for _, l, c, _, d in series
+                    if (_ := None) is None and any(col in df.columns
+                    for col, lbl, clr, lw2, ds in series if lbl == l)]
+    from matplotlib.lines import Line2D
+    handles = [
+        Line2D([0], [0], color=c, linewidth=1.5,
+               linestyle=(0, d) if d else "solid", label=l)
+        for _, l, c, _, d in series
+        if (col := _) is not None or True
+    ]
+    handles2 = []
+    for col, label, color, lw, dash in series:
+        if col not in df.columns: continue
+        handles2.append(Line2D([0],[0], color=color, linewidth=1.5,
+                               linestyle=(0,dash) if dash else "solid", label=label))
+    ax.legend(handles=handles2, loc="upper right", fontsize=9,
+              frameon=True, facecolor=BG, edgecolor=BORDER,
+              prop={"family": MONO, "size": 9})
+
+    fig.tight_layout()
     save(fig, out)
 
+
+# ── Chart 2: Fahrzeuge ─────────────────────────────────────────────
 
 def chart_vehicle(data: dict, out: Path):
     vc = data.get("vehicle_comparison", {})
     if not vc: return
 
-    mapping = [
-        ("ice",           "Benziner\n(E5)",       C.COLORS["ice"]),
-        ("bev_home",      "BEV\nHeimladen",       C.COLORS["bev_home"]),
-        ("bev_public_ac", "BEV\nÖffentl. AC",     C.COLORS["bev_ac"]),
-        ("bev_public_dc", "BEV\nSchnellladen DC", C.COLORS["bev_dc"]),
-    ]
-    labels, km_vals, cost_vals, colors = [], [], [], []
-    for key, label, color in mapping:
-        e = vc.get(key)
-        if not e: continue
-        labels.append(label)
-        km_vals.append(e.get("km_for_budget", 0))
-        cost_vals.append(e.get("cost_per_100km", 0))
-        colors.append(color)
+    # Reihenfolge: bestes zuerst (nach km_for_budget)
+    order_km   = ["bev_home", "ice", "bev_public_ac", "bev_public_dc"]
+    order_cost = ["ice", "bev_public_dc", "bev_public_ac", "bev_home"]
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), dpi=120)
-    fig.suptitle("Opel Astra – Benziner vs. Elektro", fontsize=12, fontweight="bold", color=TEXT)
+    colors_km   = [COL["dark"], COL["mid"], COL["light"], COL["pale"]]
+    colors_cost = [COL["dark"], COL["mid"], COL["light"], COL["pale"]]
 
-    for ax, vals, title, unit in [
-        (ax1, km_vals,  f"Reichweite mit {C.COMPARISON_BUDGET_EUR:.0f} €", "km"),
-        (ax2, cost_vals, "Kosten pro 100 km", "EUR"),
+    def get_bars(order, val_key):
+        labels, vals, prices, cols = [], [], [], []
+        for key, color in zip(order, [COL["dark"], COL["mid"], COL["light"], COL["pale"]]):
+            e = vc.get(key)
+            if not e: continue
+            labels.append(f"{e['label']}\n{e['price_label']}")
+            vals.append(e.get(val_key, 0))
+            cols.append(color)
+        return labels, vals, cols
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.5), dpi=110)
+    fig.patch.set_facecolor(BG)
+
+    for ax, order, val_key, title, unit_fmt in [
+        (ax1, order_km,   "km_for_budget",  "Reichweite für 50 €",  "{:.0f} km"),
+        (ax2, order_cost, "cost_per_100km", "Kosten pro 100 km",    "{:.2f} €"),
     ]:
-        dark(ax, fig)
-        bars = ax.barh(labels, vals, color=colors, height=0.5, alpha=0.88)
-        ax.set_title(title, fontsize=10, pad=8)
-        ax.set_xlabel(unit)
-        for bar, val in zip(bars, vals):
-            ax.text(bar.get_width() + max(vals) * 0.02,
-                    bar.get_y() + bar.get_height() / 2,
-                    f"{val:,.0f} km" if unit == "km" else f"{val:.2f} €",
-                    va="center", color=TEXT, fontsize=9, fontweight="bold")
-        ax.set_xlim(0, max(vals) * 1.25)
-        ax.invert_yaxis()
+        style_ax(ax, fig)
+        lbls, vals, cols = get_bars(order, val_key)
+        if not vals: continue
 
+        y = range(len(lbls))
+        bars = ax.barh(list(y), vals, color=cols, height=0.55)
+        ax.set_yticks(list(y))
+        ax.set_yticklabels(lbls, fontsize=9, fontfamily=MONO)
+        ax.invert_yaxis()
+        ax.set_title(title, fontsize=11, fontfamily="serif", pad=10, color=TEXT)
+        ax.set_xlabel(unit_fmt.split()[1] if " " in unit_fmt else "", fontsize=9)
+
+        max_val = max(vals)
+        for bar, val, col in zip(bars, vals, cols):
+            txt_color = "#fff" if col in [COL["dark"], COL["mid"]] else TEXT
+            ax.text(bar.get_width() - max_val * 0.02,
+                    bar.get_y() + bar.get_height() / 2,
+                    unit_fmt.format(val),
+                    va="center", ha="right", color=txt_color,
+                    fontsize=9, fontfamily=MONO, fontweight="bold")
+        ax.set_xlim(0, max_val * 1.05)
+        ax.xaxis.set_visible(False)
+        ax.spines["bottom"].set_visible(False)
+
+    fig.suptitle("Opel Astra – Benziner vs. Elektro",
+                 fontsize=13, fontfamily="serif", color=TEXT, y=1.01)
     fig.tight_layout()
     save(fig, out)
 
+
+# ── Chart 3: Heizkosten ────────────────────────────────────────────
 
 def chart_heating(data: dict, out: Path):
     heating = data.get("heating_costs", {})
     if not heating: return
 
-    sys_keys   = ["gas_boiler", "oil_boiler", "heat_pump", "direct_electric"]
-    sys_labels = ["Gasheizung", "Ölheizung", "Wärmepumpe\n(COP 3,5)", "Direktstrom"]
-    sys_colors = [C.COLORS["gas"], C.COLORS["oil_heat"], C.COLORS["heat_pump"], C.COLORS["direct_elec"]]
+    sys_order = ["heat_pump", "gas_boiler", "oil_boiler"]  # kein Direktstrom
+    sys_cols  = [COL["dark"], COL["mid"], COL["light"]]
 
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5), dpi=120)
-    fig.suptitle("Heizkosten im Vergleich – wöchentlich", fontsize=12, fontweight="bold", color=TEXT)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4), dpi=110)
+    fig.patch.set_facecolor(BG)
 
-    for ax, (prop_key, prop_label) in zip(axes, [
-        ("haus_150qm", "Einfamilienhaus 150 m²"), ("wohnung_100qm", "Wohnung 100 m²")
+    for ax, (prop_key, prop_label) in zip([ax1, ax2], [
+        ("haus_150qm",    "Einfamilienhaus 150 m²"),
+        ("wohnung_100qm", "Wohnung 100 m²"),
     ]):
-        dark(ax, fig)
-        vals = [heating.get(prop_key,{}).get("systems",{}).get(sk,{}).get("weekly_cost_eur") or 0
-                for sk in sys_keys]
-        bars = ax.bar(sys_labels, vals, color=sys_colors, width=0.5, alpha=0.88)
-        ax.set_title(prop_label, fontsize=10, pad=8)
-        ax.set_ylabel("EUR / Woche")
-        max_v = max(v for v in vals if v) or 1
-        for bar, val in zip(bars, vals):
-            if val:
-                ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + max_v * 0.02,
-                        f"{val:.2f} €", ha="center", color=TEXT, fontsize=9, fontweight="bold")
-        ax.set_ylim(0, max_v * 1.25)
+        style_ax(ax, fig)
+        systems = heating.get(prop_key, {}).get("systems", {})
+        lbls, vals, cols = [], [], []
+        for sk, col in zip(sys_order, sys_cols):
+            sys = systems.get(sk, {})
+            cost = sys.get("weekly_cost_eur")
+            if cost is None: continue
+            lbls.append(sys.get("label", sk))
+            vals.append(cost)
+            cols.append(col)
 
+        if not vals: continue
+        y = range(len(lbls))
+        bars = ax.barh(list(y), vals, color=cols, height=0.5)
+        ax.set_yticks(list(y))
+        ax.set_yticklabels(lbls, fontsize=9, fontfamily=MONO)
+        ax.invert_yaxis()
+        ax.set_title(prop_label, fontsize=11, fontfamily="serif", pad=10, color=TEXT)
+
+        max_val = max(vals)
+        for bar, val, col in zip(bars, vals, cols):
+            txt_color = "#fff" if col in [COL["dark"], COL["mid"]] else TEXT
+            ax.text(bar.get_width() - max_val * 0.02,
+                    bar.get_y() + bar.get_height() / 2,
+                    f"{val:.0f} €",
+                    va="center", ha="right", color=txt_color,
+                    fontsize=9, fontfamily=MONO, fontweight="bold")
+        ax.set_xlim(0, max_val * 1.05)
+        ax.xaxis.set_visible(False)
+        ax.spines["bottom"].set_visible(False)
+
+    fig.suptitle("Wöchentliche Heizkosten",
+                 fontsize=13, fontfamily="serif", color=TEXT, y=1.01)
     fig.tight_layout()
     save(fig, out)
 
 
+# ── Main ───────────────────────────────────────────────────────────
+
 def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)-8s %(message)s")
 
+    charts_dir  = ROOT / "data" / "charts"
     latest_path = ROOT / C.DATA_DIR / "latest.json"
     idx_csv     = ROOT / C.DATA_DIR / "indexed.csv"
-    charts_dir  = ROOT / "data" / "charts"
 
     if not latest_path.exists():
         log.error("latest.json fehlt"); return
