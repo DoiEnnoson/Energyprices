@@ -11,28 +11,42 @@
     "ttf_ct_kwh": 4.414,
     "heizoel_eur_liter": 0.878
   },
-  "fuel_prices": null,
+  "fuel_prices": {
+    "e5": 2.002,
+    "e10": 1.943,
+    "diesel": 1.954
+  },
   "vehicle_comparison": {
+    "ice": {
+      "label": "Astra 1.2 Turbo 130 PS (Benziner)",
+      "price_per_unit": 2.002,
+      "unit": "EUR/L",
+      "km_for_budget": 384,
+      "cost_per_100km": 13.01
+    },
     "bev_home": {
       "label": "Astra Electric 156 PS – Heimladen",
       "price_per_unit": 0.371,
       "unit": "EUR/kWh",
       "km_for_budget": 749,
-      "cost_per_100km": 6.68
+      "cost_per_100km": 6.68,
+      "savings_pct_vs_ice": 48.7
     },
     "bev_public_ac": {
       "label": "Astra Electric 156 PS – Öffentlich AC",
       "price_per_unit": 0.54,
       "unit": "EUR/kWh",
       "km_for_budget": 514,
-      "cost_per_100km": 9.72
+      "cost_per_100km": 9.72,
+      "savings_pct_vs_ice": 25.3
     },
     "bev_public_dc": {
       "label": "Astra Electric 156 PS – Schnellladen DC",
       "price_per_unit": 0.64,
       "unit": "EUR/kWh",
       "km_for_budget": 434,
-      "cost_per_100km": 11.52
+      "cost_per_100km": 11.52,
+      "savings_pct_vs_ice": 11.5
     }
   },
   "heating_costs": {
