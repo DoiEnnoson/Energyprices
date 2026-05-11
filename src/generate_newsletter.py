@@ -1,6 +1,6 @@
 """
-generate_newsletter.py – Charts liegen in data/charts/ im Repo,
-Email referenziert sie als GitHub Raw URLs. Kein Base64, kein Gmail-Clip.
+generate_newsletter.py – HTML-E-Mail im Mockup-Stil
+Charts kommen per GitHub Raw URL (kein Base64, kein Gmail-Clip)
 """
 
 import json, logging, os
@@ -15,155 +15,121 @@ log = logging.getLogger(__name__)
 ROOT = Path(__file__).parent.parent
 
 
-def github_img_url(filename: str) -> str:
-    """https://raw.githubusercontent.com/OWNER/REPO/main/data/charts/filename.png"""
-    repo = os.environ.get("GITHUB_REPOSITORY", "")  # z.B. "DoiEnnoson/Energyprices"
+def raw_url(filename: str) -> str:
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not repo:
-        log.warning("GITHUB_REPOSITORY nicht gesetzt – Bild-URLs werden leer")
         return ""
     return f"https://raw.githubusercontent.com/{repo}/main/data/charts/{filename}"
 
 
 def img(filename: str, alt: str) -> str:
-    url = github_img_url(filename)
+    url = raw_url(filename)
     if not url:
-        return f'<p style="color:#8b949e;">[{alt}]</p>'
-    return (f'<img src="{url}" alt="{alt}" '
-            f'style="width:100%;max-width:680px;border-radius:8px;margin:12px 0;" />')
+        return ""
+    return (f'<img src="{url}" alt="{alt}" width="620" '
+            f'style="width:100%;max-width:620px;display:block;margin:12px 0;" />')
 
 
 def fmt(val, dec=2, unit="") -> str:
     if val is None: return "–"
-    s = f"{val:,.{dec}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    s = f"{val:,.{dec}f}".replace(",","X").replace(".",",").replace("X",".")
     return f"{s} {unit}".strip()
 
 
 def build_html(data: dict) -> str:
     meta   = data.get("meta", {})
-    latest = data.get("latest_day", {})
+    cur    = data.get("current_week", {})
     fuel   = data.get("fuel_prices") or {}
     vc     = data.get("vehicle_comparison", {})
     heat   = data.get("heating_costs", {})
     ref    = data.get("reference", {})
+    week   = meta.get("current_week", "")
     today  = meta.get("generated", date.today().isoformat())
 
-    def row(label, val, unit, color):
-        return (f'<tr><td style="padding:7px 12px;color:#e6edf3;">{label}</td>'
-                f'<td style="padding:7px 12px;text-align:right;color:{color};font-weight:600;">'
-                f'{fmt(val, 2, unit)}</td></tr>')
+    CSS = """
+      body{margin:0;padding:0;background:#f4f3ef;font-family:Georgia,serif;color:#1a1a1a;}
+      .page{max-width:680px;margin:0 auto;background:#fff;border:1px solid #d8d5cd;}
+      .header{padding:2rem 2.5rem 1.5rem;border-bottom:2px solid #1a1a1a;}
+      .meta{font-family:'Courier New',monospace;font-size:11px;letter-spacing:.12em;
+            text-transform:uppercase;color:#888;margin-bottom:.5rem;}
+      h1{font-size:26px;font-weight:normal;line-height:1.2;letter-spacing:-.02em;margin:0;}
+      .sub{font-size:11px;color:#888;margin-top:.4rem;font-family:'Courier New',monospace;}
+      .section{padding:1.75rem 2.5rem;border-bottom:1px solid #d8d5cd;}
+      .slabel{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.15em;
+              text-transform:uppercase;color:#aaa;margin-bottom:1rem;}
+      table{width:100%;border-collapse:collapse;font-size:13px;}
+      td{padding:.45rem 0;border-bottom:1px solid #ebe9e3;color:#333;vertical-align:top;}
+      td:last-child{text-align:right;font-family:'Courier New',monospace;color:#1a1a1a;}
+      .sm{font-size:11px;color:#aaa;display:block;}
+      .footer{padding:1rem 2.5rem;font-size:10px;color:#bbb;line-height:1.7;
+              font-family:'Courier New',monospace;}
+    """
 
-    market_rows = (
-        row("Strom Day-Ahead DE-LU",     latest.get("strom_eur_mwh"),    "EUR/MWh", C.COLORS["electricity"]) +
-        row("Erdgas TTF",                latest.get("ttf"),               "EUR/MWh", C.COLORS["ttf"]) +
-        row("Erdgas TTF",                latest.get("ttf_ct_kwh"),        "ct/kWh",  C.COLORS["ttf"]) +
-        row("Brent Rohöl",               latest.get("brent_eur_bbl"),     "EUR/bbl", C.COLORS["brent"]) +
-        row("Heizöl (Futures-Proxy)",    latest.get("heizoel_eur_liter"), "EUR/L",   C.COLORS["heating_oil"])
+    # Preistabelle
+    def row(label, sub, val, unit):
+        sub_html = f'<span class="sm">{sub}</span>' if sub else ""
+        return (f"<tr><td>{label}{sub_html}</td>"
+                f"<td>{fmt(val, 2, unit)}</td></tr>")
+
+    price_rows = (
+        row("Strom Day-Ahead DE-LU", "Wochendurchschnitt", cur.get("strom_eur_mwh"), "EUR/MWh") +
+        row("Erdgas TTF",            "Wochendurchschnitt", cur.get("ttf"),            "EUR/MWh") +
+        row("Erdgas TTF",            "",                   cur.get("ttf_ct_kwh"),     "ct/kWh")  +
+        row("Brent Rohöl",           "Wochendurchschnitt", cur.get("brent_eur_bbl"),  "EUR/bbl") +
+        row("Kohle API2 CIF ARA",    "EU-Importbenchmark", cur.get("coal_eur_t"),     "EUR/t")   +
+        row("Heizöl",                "Futures-Proxy, DE Retail", cur.get("heizoel_eur_liter"), "EUR/L")
     )
-    for label, key, color in [("Super E5","e5",C.COLORS["ice"]),("E10","e10","#f59e0b"),("Diesel","diesel","#6b7280")]:
+    for label, key in [("Super E5","e5"),("E10","e10"),("Diesel","diesel")]:
         if fuel.get(key):
-            market_rows += row(f"{label} (Bundesdurchschnitt)", fuel[key], "EUR/L", color)
+            price_rows += row(label, "Bundesdurchschnitt", fuel[key], "EUR/L")
 
-    vc_rows = ""
-    for key, color in [("ice",C.COLORS["ice"]),("bev_home",C.COLORS["bev_home"]),
-                       ("bev_public_ac",C.COLORS["bev_ac"]),("bev_public_dc",C.COLORS["bev_dc"])]:
-        e = vc.get(key)
-        if not e: continue
-        save = e.get("savings_pct_vs_ice")
-        save_str = f'<small style="color:#22c55e;"> –{save:.0f}%</small>' if save else ""
-        vc_rows += (f'<tr><td style="padding:7px 12px;color:#e6edf3;">{e.get("label","")}</td>'
-                    f'<td style="padding:7px 12px;text-align:right;color:{color};font-weight:600;">'
-                    f'{fmt(e.get("cost_per_100km"),2,"€/100 km")} {save_str}</td>'
-                    f'<td style="padding:7px 12px;text-align:right;color:{color};">'
-                    f'{fmt(e.get("km_for_budget"),0,"km")} für {C.COMPARISON_BUDGET_EUR:.0f} €</td></tr>')
-
-    heat_rows = ""
-    color_map = {"gas_boiler":C.COLORS["gas"],"oil_boiler":C.COLORS["oil_heat"],
-                 "heat_pump":C.COLORS["heat_pump"],"direct_electric":C.COLORS["direct_elec"]}
-    for prop_key, prop_label in [("haus_150qm","Einfamilienhaus 150 m²"),("wohnung_100qm","Wohnung 100 m²")]:
-        heat_rows += (f'<tr style="background:#1c2128;"><td colspan="2" style="padding:9px 12px;'
-                      f'color:#e6edf3;font-weight:700;border-top:1px solid #21262d;">{prop_label}</td></tr>')
-        for sk, slabel in [("gas_boiler","Gasheizung"),("oil_boiler","Ölheizung"),
-                            ("heat_pump","Wärmepumpe (COP 3,5)"),("direct_electric","Direktstrom")]:
-            cost = heat.get(prop_key,{}).get("systems",{}).get(sk,{}).get("weekly_cost_eur")
-            c = color_map.get(sk,"#e6edf3")
-            heat_rows += (f'<tr><td style="padding:6px 12px 6px 24px;color:#e6edf3;">{slabel}</td>'
-                          f'<td style="padding:6px 12px;text-align:right;color:{c};font-weight:600;">'
-                          f'{fmt(cost,2,"€/Woche")}</td></tr>')
+    # Haushaltsstrom/-gas
+    price_rows += (
+        row("Haushaltsstrom DE", f"BDEW {ref.get('bdew_reference_period','')}", ref.get("bdew_electricity_ct_kwh"), "ct/kWh") +
+        row("Haushaltsgas DE",   f"BDEW {ref.get('bdew_reference_period','')}", ref.get("bdew_gas_ct_kwh"), "ct/kWh")
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="de">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Energiepreise Deutschland – {today}</title></head>
-<body style="margin:0;padding:0;background:#0d1117;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1117;">
-<tr><td align="center" style="padding:24px 16px;">
-<table width="680" cellpadding="0" cellspacing="0"
-  style="max-width:680px;background:#161b22;border-radius:12px;border:1px solid #21262d;">
+<title>Wöchentliche Energiepreise Deutschland – {week}</title>
+<style>{CSS}</style></head>
+<body>
+<div class="page">
 
-  <tr><td style="background:linear-gradient(135deg,#1c2128,#0d1117);padding:28px 32px;">
-    <p style="margin:0 0 4px;font-size:12px;color:#3b82f6;letter-spacing:1.5px;text-transform:uppercase;">
-      Täglicher Energie-Report</p>
-    <h1 style="margin:0 0 6px;font-size:24px;font-weight:700;color:#e6edf3;">Energiepreise Deutschland</h1>
-    <p style="margin:0;font-size:13px;color:#8b949e;">
-      Stand {today} · Index 100 = 1. Januar 2026</p>
-  </td></tr>
+  <div class="header">
+    <div class="meta">Wöchentliche Energiepreise Deutschland &nbsp;·&nbsp; {week}</div>
+    <h1>Wöchentliche Energiepreise<br>Deutschland</h1>
+    <div class="sub">Index 100 = 1. Januar 2026 &nbsp;·&nbsp; Wochendurchschnitte</div>
+  </div>
 
-  <tr><td style="padding:24px 32px 8px;">
-    <h2 style="margin:0 0 14px;font-size:15px;font-weight:700;color:#e6edf3;
-      border-bottom:1px solid #21262d;padding-bottom:8px;">📊 Aktuelle Marktpreise</h2>
-    <table width="100%" cellpadding="0" cellspacing="0"
-      style="border-collapse:collapse;border:1px solid #21262d;border-radius:8px;overflow:hidden;">
-      <thead><tr style="background:#1c2128;">
-        <th style="padding:9px 12px;text-align:left;color:#8b949e;font-size:11px;text-transform:uppercase;">Energieträger</th>
-        <th style="padding:9px 12px;text-align:right;color:#8b949e;font-size:11px;text-transform:uppercase;">Aktuell</th>
-      </tr></thead>
-      <tbody>{market_rows}</tbody>
-    </table>
-  </td></tr>
+  <div class="section">
+    <div class="slabel">Preisentwicklung seit 1.1.2026</div>
+    {img("chart_index.png", "Energiepreisindex")}
+  </div>
 
-  <tr><td style="padding:4px 32px 16px;">
-    {img("chart_index.png", "Energiepreisindex ab 1.1.2026")}
-  </td></tr>
+  <div class="section">
+    <div class="slabel">Marktpreise {week}</div>
+    <table>{price_rows}</table>
+  </div>
 
-  <tr><td style="padding:8px 32px;">
-    <h2 style="margin:0 0 8px;font-size:15px;font-weight:700;color:#e6edf3;
-      border-bottom:1px solid #21262d;padding-bottom:8px;">🚗⚡ Opel Astra – Benziner vs. Elektro</h2>
-    <table width="100%" cellpadding="0" cellspacing="0"
-      style="border-collapse:collapse;border:1px solid #21262d;border-radius:8px;overflow:hidden;">
-      <thead><tr style="background:#1c2128;">
-        <th style="padding:9px 12px;text-align:left;color:#8b949e;font-size:11px;text-transform:uppercase;">Antrieb</th>
-        <th style="padding:9px 12px;text-align:right;color:#8b949e;font-size:11px;text-transform:uppercase;">Kosten/100 km</th>
-        <th style="padding:9px 12px;text-align:right;color:#8b949e;font-size:11px;text-transform:uppercase;">Reichweite</th>
-      </tr></thead>
-      <tbody>{vc_rows}</tbody>
-    </table>
+  <div class="section">
+    <div class="slabel">Mobilität &nbsp;·&nbsp; Opel Astra</div>
     {img("chart_vehicle.png", "Fahrzeugvergleich")}
-  </td></tr>
+  </div>
 
-  <tr><td style="padding:8px 32px 16px;">
-    <h2 style="margin:0 0 8px;font-size:15px;font-weight:700;color:#e6edf3;
-      border-bottom:1px solid #21262d;padding-bottom:8px;">🏠 Heizkosten im Vergleich</h2>
-    <table width="100%" cellpadding="0" cellspacing="0"
-      style="border-collapse:collapse;border:1px solid #21262d;border-radius:8px;overflow:hidden;">
-      <thead><tr style="background:#1c2128;">
-        <th style="padding:9px 12px;text-align:left;color:#8b949e;font-size:11px;text-transform:uppercase;">Heizsystem</th>
-        <th style="padding:9px 12px;text-align:right;color:#8b949e;font-size:11px;text-transform:uppercase;">€/Woche</th>
-      </tr></thead>
-      <tbody>{heat_rows}</tbody>
-    </table>
+  <div class="section">
+    <div class="slabel">Heizkosten &nbsp;·&nbsp; Wöchentlich</div>
     {img("chart_heating.png", "Heizkosten")}
-  </td></tr>
+  </div>
 
-  <tr><td style="padding:12px 32px 24px;border-top:1px solid #21262d;">
-    <p style="margin:0;font-size:11px;color:#8b949e;line-height:1.7;">
-      <strong style="color:#e6edf3;">Quellen:</strong>
-      Energy-Charts/ENTSO-E · Yahoo Finance (BZ=F, TTF=F, HO=F) · Tankerkönig/MTS-K ·
-      BDEW ({ref.get("bdew_reference_period","")}) · GlobalPetrolPrices.com<br>
-      Automatisch generiert am {today}
-    </p>
-  </td></tr>
+  <div class="footer">
+    Energy-Charts/ENTSO-E · Yahoo Finance (BZ=F, TTF=F, MTF=F, HO=F) · Tankerkönig/MTS-K ·
+    BDEW · GlobalPetrolPrices.com<br>
+    Automatisch generiert am {today}
+  </div>
 
-</table></td></tr></table>
+</div>
 </body></html>"""
 
 
@@ -177,10 +143,10 @@ def main():
     with open(latest_path, encoding="utf-8") as f:
         data = json.load(f)
 
-    today = data.get("meta", {}).get("generated", date.today().isoformat())
-    html  = build_html(data)
+    week = data.get("meta", {}).get("current_week", date.today().isoformat())
+    html = build_html(data)
 
-    out = ROOT / C.OUTPUT_DIR / f"newsletter_{today}.html"
+    out = ROOT / C.OUTPUT_DIR / f"newsletter_{week}.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
     log.info(f"Newsletter → {out}")
