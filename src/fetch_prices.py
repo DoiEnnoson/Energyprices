@@ -57,30 +57,40 @@ def fetch_electricity() -> pd.DataFrame:
 
 def fetch_yahoo() -> pd.DataFrame:
     log.info("Yahoo Finance: Rohstoffe …")
+    # Kohle: MTF=F rollt monatlich – mehrere Ticker probieren
+    COAL_TICKERS = ["MTF=F", "MTFM26.NYM", "MTFN26.NYM", "MTFQ26.NYM"]
+
     tickers = {
-        "brent":       "BZ=F",
-        "ttf":         "TTF=F",
-        "coal":        "MTF=F",
-        "heating_oil": "HO=F",
-        "eurusd":      "EURUSD=X",
+        "brent":       ["BZ=F"],
+        "ttf":         ["TTF=F"],
+        "coal":        COAL_TICKERS,
+        "heating_oil": ["HO=F"],
+        "eurusd":      ["EURUSD=X"],
     }
     frames = []
-    for name, ticker in tickers.items():
-        try:
-            raw = yf.download(ticker, start=START_DATE.isoformat(),
-                              end=TODAY.isoformat(), progress=False, auto_adjust=True)
-            close = yf_close(raw, ticker)
-            if close.empty:
-                log.warning(f"  {name}: keine Daten")
-                continue
-            s = close.copy()
-            s.index = pd.to_datetime(s.index).date
-            df = s.reset_index()
-            df.columns = ["date", name]
-            frames.append(df)
-            log.info(f"  {name}: {len(df)} Tage")
-        except Exception as e:
-            log.error(f"  {name}: {e}")
+    for name, ticker_list in tickers.items():
+        if isinstance(ticker_list, str):
+            ticker_list = [ticker_list]
+        got_data = False
+        for ticker in ticker_list:
+            try:
+                raw = yf.download(ticker, start=START_DATE.isoformat(),
+                                  end=TODAY.isoformat(), progress=False, auto_adjust=True)
+                close = yf_close(raw, ticker)
+                if close.empty:
+                    continue
+                s = close.copy()
+                s.index = pd.to_datetime(s.index).date
+                df = s.reset_index()
+                df.columns = ["date", name]
+                frames.append(df)
+                log.info(f"  {name} ({ticker}): {len(df)} Tage")
+                got_data = True
+                break
+            except Exception as e:
+                log.warning(f"  {name} ({ticker}): {e}")
+        if not got_data:
+            log.warning(f"  {name}: alle Ticker ohne Daten – wird übersprungen")
 
     if not frames:
         return pd.DataFrame(columns=["date"])
