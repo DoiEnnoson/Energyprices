@@ -1,55 +1,16 @@
 {
   "meta": {
-    "week": "2026-KW19",
-    "week_start": "2026-05-04",
-    "week_end": "2026-05-10",
-    "generated": "2026-05-11"
+    "generated": "2026-05-11",
+    "data_from": "2026-01-01",
+    "data_to": "2026-05-10"
   },
-  "electricity_dayahead": {
-    "source": "Energy-Charts API (Fraunhofer ISE)",
-    "unit": "EUR/MWh",
-    "week_avg": 113.93,
-    "week_min": -3.11,
-    "week_max": 356.27,
-    "daily": {
-      "2026-05-04": {
-        "avg": 131.06,
-        "min": 63.0,
-        "max": 356.27
-      },
-      "2026-05-05": {
-        "avg": 128.73,
-        "min": 92.33,
-        "max": 185.84
-      },
-      "2026-05-06": {
-        "avg": 122.44,
-        "min": 83.8,
-        "max": 177.79
-      },
-      "2026-05-07": {
-        "avg": 136.03,
-        "min": 99.86,
-        "max": 225.27
-      },
-      "2026-05-08": {
-        "avg": 113.81,
-        "min": 50.79,
-        "max": 161.08
-      },
-      "2026-05-09": {
-        "avg": 88.33,
-        "min": -0.09,
-        "max": 157.52
-      },
-      "2026-05-10": {
-        "avg": 77.09,
-        "min": -3.11,
-        "max": 133.41
-      }
-    }
+  "latest_day": {
+    "strom_eur_mwh": 119.26,
+    "brent_eur_bbl": 86.34,
+    "ttf": 44.143001556396484,
+    "ttf_ct_kwh": 4.414,
+    "heizoel_eur_liter": 0.878
   },
-  "commodities": {},
   "fuel_prices": null,
   "vehicle_comparison": {
     "bev_home": {
@@ -57,24 +18,21 @@
       "price_per_unit": 0.371,
       "unit": "EUR/kWh",
       "km_for_budget": 749,
-      "cost_per_100km": 6.68,
-      "source": "BDEW Ø 37.1 ct/kWh (2026-05 (auto))"
+      "cost_per_100km": 6.68
     },
     "bev_public_ac": {
       "label": "Astra Electric 156 PS – Öffentlich AC",
       "price_per_unit": 0.54,
       "unit": "EUR/kWh",
       "km_for_budget": 514,
-      "cost_per_100km": 9.72,
-      "source": "Verivox/BDEW Ø 2025"
+      "cost_per_100km": 9.72
     },
     "bev_public_dc": {
       "label": "Astra Electric 156 PS – Schnellladen DC",
       "price_per_unit": 0.64,
       "unit": "EUR/kWh",
       "km_for_budget": 434,
-      "cost_per_100km": 11.52,
-      "source": "Verivox/BDEW Ø 2025"
+      "cost_per_100km": 11.52
     }
   },
   "heating_costs": {
@@ -83,23 +41,19 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 331.56,
-          "price_basis": "100.0 ct/kWh (BDEW 2026-05 (auto))"
+          "weekly_cost_eur": 331.56
         },
         "oil_boiler": {
           "label": "Ölheizung",
-          "weekly_cost_eur": null,
-          "note": "Heizölpreis nicht verfügbar"
+          "weekly_cost_eur": null
         },
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
-          "weekly_cost_eur": 30.58,
-          "price_basis": "37.1 ct/kWh (BDEW 2026-05 (auto))"
+          "weekly_cost_eur": 30.58
         },
         "direct_electric": {
           "label": "Direktstromheizung",
-          "weekly_cost_eur": 107.02,
-          "price_basis": "37.1 ct/kWh (BDEW 2026-05 (auto))"
+          "weekly_cost_eur": 107.02
         }
       }
     },
@@ -108,23 +62,19 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 176.83,
-          "price_basis": "100.0 ct/kWh (BDEW 2026-05 (auto))"
+          "weekly_cost_eur": 176.83
         },
         "oil_boiler": {
           "label": "Ölheizung",
-          "weekly_cost_eur": null,
-          "note": "Heizölpreis nicht verfügbar"
+          "weekly_cost_eur": null
         },
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
-          "weekly_cost_eur": 16.31,
-          "price_basis": "37.1 ct/kWh (BDEW 2026-05 (auto))"
+          "weekly_cost_eur": 16.31
         },
         "direct_electric": {
           "label": "Direktstromheizung",
-          "weekly_cost_eur": 57.08,
-          "price_basis": "37.1 ct/kWh (BDEW 2026-05 (auto))"
+          "weekly_cost_eur": 57.08
         }
       }
     }
@@ -134,6 +84,8 @@
     "bdew_gas_ct_kwh": 100.0,
     "bdew_reference_period": "2026-05 (auto)",
     "public_charging_ac_ct_kwh": 54.0,
-    "public_charging_dc_ct_kwh": 64.0
+    "public_charging_dc_ct_kwh": 64.0,
+    "index_base_date": "2026-01-01",
+    "index_base_value": 100
   }
 }
