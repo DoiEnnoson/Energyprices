@@ -256,7 +256,14 @@ def main():
     idx.to_csv(Path(C.DATA_DIR) / "indexed.csv", index=False, float_format="%.1f")
 
     # Aktuelle KW
-    cur = weekly.iloc[-1].to_dict() if not weekly.empty else {}
+    # Letzte Woche mit validen Commodity-Daten (nicht die laufende Woche)
+    commodity_cols = [c for c in ["brent_eur_bbl", "ttf", "heizoel_eur_liter"]
+                      if c in weekly.columns]
+    if commodity_cols:
+        valid = weekly.dropna(subset=commodity_cols, how="all")
+    else:
+        valid = weekly
+    cur = valid.iloc[-1].to_dict() if not valid.empty else {}
     vehicle = compute_vehicle(fuel)
     heating = compute_heating()
 
