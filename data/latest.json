@@ -1,52 +1,48 @@
 {
   "meta": {
     "generated": "2026-05-11",
-    "data_from": "2026-01-01",
-    "data_to": "2026-05-10"
+    "current_week": "2026-KW20"
   },
-  "latest_day": {
+  "current_week": {
+    "kw_label": "2026-KW20",
     "strom_eur_mwh": 119.26,
-    "brent_eur_bbl": 86.34,
-    "ttf": 44.143001556396484,
-    "ttf_ct_kwh": 4.414,
-    "heizoel_eur_liter": 0.878
+    "brent_eur_bbl": NaN,
+    "ttf": NaN,
+    "ttf_ct_kwh": NaN,
+    "heizoel_eur_liter": NaN
   },
   "fuel_prices": {
     "e5": 2.002,
     "e10": 1.943,
-    "diesel": 1.954
+    "diesel": 1.953
   },
   "vehicle_comparison": {
     "ice": {
-      "label": "Astra 1.2 Turbo 130 PS (Benziner)",
-      "price_per_unit": 2.002,
-      "unit": "EUR/L",
+      "label": "Benziner",
+      "price_label": "2.00 €/L",
       "km_for_budget": 384,
       "cost_per_100km": 13.01
     },
     "bev_home": {
-      "label": "Astra Electric 156 PS – Heimladen",
-      "price_per_unit": 0.371,
-      "unit": "EUR/kWh",
+      "label": "Heimladen",
+      "price_label": "37 ct/kWh",
       "km_for_budget": 749,
       "cost_per_100km": 6.68,
-      "savings_pct_vs_ice": 48.7
+      "savings_pct": 48.7
     },
     "bev_public_ac": {
-      "label": "Astra Electric 156 PS – Öffentlich AC",
-      "price_per_unit": 0.54,
-      "unit": "EUR/kWh",
+      "label": "Öffentlich AC",
+      "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct_vs_ice": 25.3
+      "savings_pct": 25.3
     },
     "bev_public_dc": {
-      "label": "Astra Electric 156 PS – Schnellladen DC",
-      "price_per_unit": 0.64,
-      "unit": "EUR/kWh",
+      "label": "Schnellladen DC",
+      "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct_vs_ice": 11.5
+      "savings_pct": 11.5
     }
   },
   "heating_costs": {
@@ -64,10 +60,6 @@
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
           "weekly_cost_eur": 30.58
-        },
-        "direct_electric": {
-          "label": "Direktstromheizung",
-          "weekly_cost_eur": 107.02
         }
       }
     },
@@ -85,10 +77,6 @@
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
           "weekly_cost_eur": 16.31
-        },
-        "direct_electric": {
-          "label": "Direktstromheizung",
-          "weekly_cost_eur": 57.08
         }
       }
     }
@@ -98,8 +86,6 @@
     "bdew_gas_ct_kwh": 100.0,
     "bdew_reference_period": "2026-05 (auto)",
     "public_charging_ac_ct_kwh": 54.0,
-    "public_charging_dc_ct_kwh": 64.0,
-    "index_base_date": "2026-01-01",
-    "index_base_value": 100
+    "public_charging_dc_ct_kwh": 64.0
   }
 }
