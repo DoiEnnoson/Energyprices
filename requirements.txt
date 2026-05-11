@@ -1,8 +1,0 @@
-requests>=2.31
-pandas>=2.1
-yfinance>=0.2.36
-matplotlib>=3.8
-beautifulsoup4>=4.12  # Scraping für Haushaltspreise
-groq>=0.9             # LLM-Fallback für Preisextraktion (kostenlos)
-sendgrid>=6.11        # optional – nur für EMAIL_PROVIDER=sendgrid
-tweepy>=4.14          # optional – nur für Twitter-Modul
