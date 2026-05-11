@@ -26,17 +26,24 @@ jobs:
       - name: Abhängigkeiten installieren
         run: pip install -r requirements.txt
 
-      - name: Pipeline ausführen
-        run: python run.py
+      - name: Pipeline ausführen (ohne E-Mail)
+        run: python run.py --no-email
         env:
-          GMAIL_CONFIG:          ${{ secrets.GMAIL_CONFIG }}
-          GROQ_API_KEY:          ${{ secrets.GROQ_API_KEY }}
-          TANKERKOENIG_API_KEY:  ${{ secrets.TANKERKOENIG_API_KEY }}
+          GMAIL_CONFIG:         ${{ secrets.GMAIL_CONFIG }}
+          GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}
+          TANKERKOENIG_API_KEY: ${{ secrets.TANKERKOENIG_API_KEY }}
+          GITHUB_REPOSITORY:    ${{ github.repository }}
 
-      - name: Daten committen
+      - name: Charts und Daten committen
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add data/
-          git diff --staged --quiet || git commit -m "data: weekly update $(date -u +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "data: update $(date -u +%Y-%m-%d)"
           git push
+
+      - name: E-Mail senden
+        run: python src/send_email.py
+        env:
+          GMAIL_CONFIG:      ${{ secrets.GMAIL_CONFIG }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
