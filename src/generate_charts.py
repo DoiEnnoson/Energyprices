@@ -91,8 +91,11 @@ def chart_index(daily_csv: Path, out: Path):
         ax.text(s.index[-1], s.iloc[-1],
                 f"  {s.iloc[-1]:.0f}", color=color, fontsize=8,
                 va="center", fontfamily=MONO)
+        display_label = label
+        if col == "coal_idx" and s.index[0].month > 1:
+            display_label = f"{label} (ab {s.index[0].strftime('%d.%m.')})"
         legend_handles.append(
-            Line2D([0], [0], color=color, linewidth=1.5, linestyle=ls, label=label)
+            Line2D([0], [0], color=color, linewidth=1.5, linestyle=ls, label=display_label)
         )
 
     ax.axhline(100, color=BORDER, linewidth=0.8, linestyle="--")
