@@ -76,7 +76,7 @@ def chart_index(daily_csv: Path, out: Path):
         ("heizoel_idx", "Heizöl",               COL["heizoel"], 1.5, [2, 2]),
     ]
 
-    fig, ax = plt.subplots(figsize=(12, 5.5), dpi=110)
+    fig, ax = plt.subplots(figsize=(14, 6.5), dpi=120)
     style_ax(ax, fig)
 
     legend_handles = []
@@ -126,7 +126,8 @@ def chart_vehicle(data: dict, out: Path):
     # Reihenfolge: Tankstelle, DC Schnellladen, Wallbox, öffentl. AC
     order_km   = ["ice", "bev_public_dc", "bev_home", "bev_public_ac"]
     order_cost = ["ice", "bev_public_dc", "bev_home", "bev_public_ac"]
-    shades     = [COL["dark"], COL["mid"], COL["light"], COL["pale"]]
+    # Tankstelle=schwarz, DC=anthrazit, Wallbox=blau, AC=schiefergrau
+    shades     = ["#1a1a1a", "#374151", "#2563eb", "#64748b"]
 
     # Labels überschreiben
     label_overrides = {
@@ -147,7 +148,7 @@ def chart_vehicle(data: dict, out: Path):
             cols.append(color)
         return lbls, vals, cols
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5), dpi=110)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), dpi=120)
     fig.patch.set_facecolor(BG)
 
     for ax, order, val_key, title, unit_fmt in [
@@ -167,11 +168,11 @@ def chart_vehicle(data: dict, out: Path):
         ax.spines["bottom"].set_visible(False)
         max_val = max(vals) if vals else 1
         for bar, val, col in zip(bars, vals, cols):
-            txt_color = "#fff" if col in [COL["dark"], COL["mid"]] else TEXT
+            txt_color = "#fff" if col in ["#1a1a1a","#374151","#2563eb"] else TEXT
             ax.text(bar.get_width() - max_val * 0.02,
                     bar.get_y() + bar.get_height() / 2,
                     unit_fmt.format(val), va="center", ha="right",
-                    color=txt_color, fontsize=9, fontfamily=MONO, fontweight="bold")
+                    color=txt_color, fontsize=10, fontfamily=MONO, fontweight="bold")
         ax.set_xlim(0, max_val * 1.05)
 
     fig.suptitle("Opel Astra – Benziner vs. Elektro",
@@ -187,9 +188,9 @@ def chart_heating(data: dict, out: Path):
     if not heating: return
 
     sys_order = ["heat_pump", "gas_boiler", "oil_boiler"]
-    sys_cols  = [COL["dark"], COL["mid"], COL["light"]]
+    sys_cols  = ["#1a1a1a", "#374151", "#2563eb"]  # Wärmepumpe, Gas, Öl
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4), dpi=110)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=120)
     fig.patch.set_facecolor(BG)
 
     for ax, (prop_key, prop_label) in zip([ax1, ax2], [
@@ -217,7 +218,7 @@ def chart_heating(data: dict, out: Path):
         ax.spines["bottom"].set_visible(False)
         max_val = max(vals) if vals else 1
         for bar, val, col in zip(bars, vals, cols):
-            txt_color = "#fff" if col in [COL["dark"], COL["mid"]] else TEXT
+            txt_color = "#fff" if col in ["#1a1a1a","#374151","#2563eb"] else TEXT
             ax.text(bar.get_width() - max_val * 0.02,
                     bar.get_y() + bar.get_height() / 2,
                     f"{val:.0f} €", va="center", ha="right",
