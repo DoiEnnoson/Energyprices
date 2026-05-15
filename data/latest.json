@@ -15,15 +15,15 @@
     "kw_label": "2026-KW20"
   },
   "fuel_prices": {
-    "e5": 2.022,
-    "e10": 1.964,
-    "diesel": 1.961
+    "e5": 2.021,
+    "e10": 1.963,
+    "diesel": 1.959
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
       "price_label": "2.02 €/L",
-      "km_for_budget": 380,
+      "km_for_budget": 381,
       "cost_per_100km": 13.14
     },
     "bev_home": {
