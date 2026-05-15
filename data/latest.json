@@ -14,16 +14,16 @@
     "kw_label": "2026-KW20"
   },
   "fuel_prices": {
-    "e5": 2.037,
-    "e10": 1.979,
-    "diesel": 1.98
+    "e5": 2.036,
+    "e10": 1.977,
+    "diesel": 1.979
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
       "price_label": "2.04 €/L",
       "km_for_budget": 378,
-      "cost_per_100km": 13.24
+      "cost_per_100km": 13.23
     },
     "bev_home": {
       "label": "Heimladen",
@@ -37,14 +37,14 @@
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 26.6
+      "savings_pct": 26.5
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
       "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct": 13.0
+      "savings_pct": 12.9
     }
   },
   "heating_costs": {
