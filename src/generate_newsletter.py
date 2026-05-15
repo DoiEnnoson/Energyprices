@@ -126,7 +126,10 @@ def build_html(data: dict) -> str:
     Energy-Charts/ENTSO-E (Strom Day-Ahead) · Yahoo Finance BZ=F (Brent) · Yahoo Finance TTF=F (Erdgas TTF) ·
     OilPrice.com COAL_USD (Kohle, Spotpreis) · Yahoo Finance HO=F (Heizöl, NY Harbor ULSD als Retail-Proxy) ·
     Tankerkönig/MTS-K (Kraftstoffpreise, Bundesdurchschnitt aus 7 Städten) ·
-    GlobalPetrolPrices.com (Haushaltsstrom & Haushaltsgas, automatisch aktualisiert) ·
+    GlobalPetrolPrices.com (Haushaltsstrom & Haushaltsgas, automatisch aktualisiert)<br>
+    Fahrzeugvergleich: Opel Astra 1.2 Turbo 130 PS (Benziner) vs. Opel Astra Electric 156 PS ·
+    Realer Verbrauch: 6,5 L/100 km bzw. 18 kWh/100 km (Spritmonitor.de-Durchschnitt, kein WLTP-Laborwert) ·
+    Ladepreise: Tankerkönig (E5), Verivox-Marktdurchschnitt DE (AC/DC), BDEW-Haushaltsstrompreis (Wallbox) ·
     Automatisch generiert am {today}
   </div>
 
