@@ -123,16 +123,26 @@ def chart_vehicle(data: dict, out: Path):
     if not vc:
         return
 
-    order_km   = ["bev_home", "ice", "bev_public_ac", "bev_public_dc"]
-    order_cost = ["ice", "bev_public_dc", "bev_public_ac", "bev_home"]
+    # Reihenfolge: Tankstelle, DC Schnellladen, Wallbox, öffentl. AC
+    order_km   = ["ice", "bev_public_dc", "bev_home", "bev_public_ac"]
+    order_cost = ["ice", "bev_public_dc", "bev_home", "bev_public_ac"]
     shades     = [COL["dark"], COL["mid"], COL["light"], COL["pale"]]
+
+    # Labels überschreiben
+    label_overrides = {
+        "ice":           "Tankstelle",
+        "bev_public_dc": "Schnellladen (DC)",
+        "bev_home":      "Heimladen (Wallbox)",
+        "bev_public_ac": "Öffentl. Laden (AC)",
+    }
 
     def get_bars(order, val_key):
         lbls, vals, cols = [], [], []
         for key, color in zip(order, shades):
             e = vc.get(key)
             if not e: continue
-            lbls.append(f"{e['label']}\n{e['price_label']}")
+            label = label_overrides.get(key, e["label"])
+            lbls.append(f"{label}\n{e['price_label']}")
             vals.append(e.get(val_key, 0))
             cols.append(color)
         return lbls, vals, cols
