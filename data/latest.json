@@ -10,13 +10,14 @@
     "ttf_eur_mwh": 46.734,
     "ttf_ct_kwh": 4.687,
     "coal_usd_t": 108.514,
+    "coal_eur_t": 92.658,
     "heizoel_eur_liter": 0.899,
     "kw_label": "2026-KW20"
   },
   "fuel_prices": {
     "e5": 2.022,
     "e10": 1.964,
-    "diesel": 1.962
+    "diesel": 1.961
   },
   "vehicle_comparison": {
     "ice": {
