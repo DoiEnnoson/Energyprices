@@ -162,18 +162,24 @@ def build_daily_csv(strom: pd.Series, commodities: pd.DataFrame) -> pd.DataFrame
         "heizoel_eur_liter":"heizoel_idx",
     }
 
+    # Basiswert = Durchschnitt der ersten vollen Handelswoche ab BASE_DATE
+    # (KW1 = 5 Handelstage) – robust gegen Feiertags-Ausreißer und negative Preise
     for price_col, idx_col in price_cols.items():
         if price_col not in df.columns:
             continue
         s = df[price_col].dropna()
-        # Basiswert: erster Wert ab BASE_DATE
-        candidates = s[s.index >= pd.Timestamp(BASE_DATE)]
+        # Nur positive Werte ab BASE_DATE (negative Strompreise ausschließen)
+        candidates = s[(s.index >= pd.Timestamp(BASE_DATE)) & (s > 0)]
         if candidates.empty:
             continue
-        base_val = candidates.iloc[0]
+        # Erste 5 Handelstage als Basis
+        base_window = candidates.iloc[:5]
+        base_val = base_window.mean()
+        base_start = base_window.index[0].date()
+        base_end   = base_window.index[-1].date()
         if base_val and base_val != 0:
             df[idx_col] = (df[price_col] / base_val * 100).round(2)
-            log.info(f"  Index {idx_col}: Basis {candidates.index[0].date()} = {base_val:.3f}")
+            log.info(f"  Index {idx_col}: Basis {base_start}–{base_end} Ø = {base_val:.3f}")
 
     df.index.name = "date"
     return df
