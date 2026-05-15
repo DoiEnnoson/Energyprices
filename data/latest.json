@@ -14,37 +14,37 @@
     "kw_label": "2026-KW20"
   },
   "fuel_prices": {
-    "e5": 2.035,
-    "e10": 1.976,
-    "diesel": 1.977
+    "e5": 2.032,
+    "e10": 1.973,
+    "diesel": 1.975
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
-      "price_label": "2.04 €/L",
-      "km_for_budget": 378,
-      "cost_per_100km": 13.23
+      "price_label": "2.03 €/L",
+      "km_for_budget": 379,
+      "cost_per_100km": 13.21
     },
     "bev_home": {
       "label": "Heimladen",
       "price_label": "37 ct/kWh",
       "km_for_budget": 749,
       "cost_per_100km": 6.68,
-      "savings_pct": 49.5
+      "savings_pct": 49.4
     },
     "bev_public_ac": {
       "label": "Öffentlich AC",
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 26.5
+      "savings_pct": 26.4
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
       "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct": 12.9
+      "savings_pct": 12.8
     }
   },
   "heating_costs": {
@@ -53,7 +53,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 331.56
+          "weekly_cost_eur": 36.64
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -70,7 +70,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 176.83
+          "weekly_cost_eur": 19.54
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -85,7 +85,7 @@
   },
   "reference": {
     "bdew_electricity_ct_kwh": 37.1,
-    "bdew_gas_ct_kwh": 100.0,
+    "bdew_gas_ct_kwh": 11.05,
     "bdew_reference_period": "2026-05 (auto)",
     "public_charging_ac_ct_kwh": 54.0,
     "public_charging_dc_ct_kwh": 64.0
