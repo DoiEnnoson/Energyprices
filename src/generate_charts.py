@@ -103,14 +103,15 @@ def chart_index(daily_csv: Path, out: Path):
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%d.%m."))
     ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=0, interval=2))
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=35, ha="right",
-             fontsize=8, fontfamily=MONO)
+             fontsize=10, fontfamily="sans-serif", color=TEXT)
     for tick in ax.get_yticklabels():
-        tick.set_fontfamily(MONO)
-        tick.set_fontsize(8)
+        tick.set_fontfamily("sans-serif")
+        tick.set_fontsize(10)
+        tick.set_color(TEXT)
 
     ax.legend(handles=legend_handles, loc="upper left", fontsize=9,
               frameon=True, facecolor=BG, edgecolor=BORDER,
-              prop={"family": MONO, "size": 9})
+              prop={"family": "sans-serif", "size": 10})
 
     fig.tight_layout()
     save(fig, out)
@@ -160,9 +161,9 @@ def chart_vehicle(data: dict, out: Path):
         y = list(range(len(lbls)))
         bars = ax.barh(y, vals, color=cols, height=0.55)
         ax.set_yticks(y)
-        ax.set_yticklabels(lbls, fontsize=11, fontfamily=MONO)
+        ax.set_yticklabels(lbls, fontsize=11, fontfamily="sans-serif", color=TEXT)
         ax.invert_yaxis()
-        ax.set_title(title, fontsize=11, fontfamily="serif", pad=10, color=TEXT)
+        ax.set_title(title, fontsize=12, fontfamily="sans-serif", pad=10, color=TEXT, fontweight="bold")
         ax.xaxis.set_visible(False)
         ax.spines["bottom"].set_visible(False)
         max_val = max(vals) if vals else 1
@@ -170,11 +171,11 @@ def chart_vehicle(data: dict, out: Path):
             ax.text(bar.get_width() - max_val * 0.02,
                     bar.get_y() + bar.get_height() / 2,
                     unit_fmt.format(val), va="center", ha="right",
-                    color="#fff", fontsize=11, fontfamily=MONO, fontweight="bold")
+                    color="#fff", fontsize=11, fontfamily="sans-serif", fontweight="bold")
         ax.set_xlim(0, max_val * 1.05)
 
     fig.suptitle("Opel Astra – Benziner vs. Elektro",
-                 fontsize=13, fontfamily="serif", color=TEXT, y=1.01)
+                 fontsize=13, fontfamily="sans-serif", color=TEXT, fontweight="bold", y=1.01)
     fig.tight_layout()
     save(fig, out)
 
@@ -186,7 +187,7 @@ def chart_heating(data: dict, out: Path):
     if not heating: return
 
     sys_order = ["heat_pump", "gas_boiler", "oil_boiler"]
-    sys_cols  = ["#1a1a1a", "#b45309", "#1d4ed8"]
+    sys_cols  = [COL["dark"], COL["mid"], COL["light"]]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=120)
     fig.patch.set_facecolor(BG)
@@ -209,9 +210,9 @@ def chart_heating(data: dict, out: Path):
         y = list(range(len(lbls)))
         bars = ax.barh(y, vals, color=cols, height=0.5)
         ax.set_yticks(y)
-        ax.set_yticklabels(lbls, fontsize=11, fontfamily=MONO)
+        ax.set_yticklabels(lbls, fontsize=11, fontfamily="sans-serif", color=TEXT)
         ax.invert_yaxis()
-        ax.set_title(prop_label, fontsize=11, fontfamily="serif", pad=10, color=TEXT)
+        ax.set_title(prop_label, fontsize=12, fontfamily="sans-serif", pad=10, color=TEXT, fontweight="bold")
         ax.xaxis.set_visible(False)
         ax.spines["bottom"].set_visible(False)
         max_val = max(vals) if vals else 1
@@ -219,11 +220,11 @@ def chart_heating(data: dict, out: Path):
             ax.text(bar.get_width() - max_val * 0.02,
                     bar.get_y() + bar.get_height() / 2,
                     f"{val:.0f} €", va="center", ha="right",
-                    color="#fff", fontsize=11, fontfamily=MONO, fontweight="bold")
+                    color="#fff", fontsize=11, fontfamily="sans-serif", fontweight="bold")
         ax.set_xlim(0, max_val * 1.05)
 
     fig.suptitle("Wöchentliche Heizkosten",
-                 fontsize=13, fontfamily="serif", color=TEXT, y=1.01)
+                 fontsize=13, fontfamily="sans-serif", color=TEXT, fontweight="bold", y=1.01)
     fig.tight_layout()
     save(fig, out)
 
