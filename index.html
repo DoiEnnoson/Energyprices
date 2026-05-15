@@ -54,9 +54,9 @@
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
   .bar-label{width:145px;flex-shrink:0;font-size:12px;line-height:1.4;}
   .bar-label .price{font-size:11px;color:#888;display:block;}
-  .bar-track{flex:1;height:28px;background:#ebe9e3;position:relative;}
+  .bar-track{flex:1;height:28px;background:#ebe9e3;}
   .bar-fill{height:100%;}
-  .bar-val{position:absolute;right:-50px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:500;white-space:nowrap;font-family:'Courier New',monospace;}
+  .bar-val{width:52px;flex-shrink:0;font-size:12px;font-weight:500;white-space:nowrap;font-family:'Courier New',monospace;text-align:right;}
 
   /* Footer */
   footer{padding:1.25rem 2rem;font-size:11px;color:#888;line-height:1.8;}
@@ -150,8 +150,8 @@ function barRow(label, priceLabel, pct, color, valStr) {
     <div class="bar-label">${label}<span class="price">${priceLabel}</span></div>
     <div class="bar-track">
       <div class="bar-fill" style="width:${Math.max(pct,2)}%;background:${color};"></div>
-      <span class="bar-val">${valStr}</span>
     </div>
+    <span class="bar-val">${valStr}</span>
   </div>`;
 }
 
@@ -214,7 +214,7 @@ function renderPriceTable(d) {
 
   document.getElementById('price-table').innerHTML =
     row('Strom (Börse)', 'Wochendurchschnitt', fmtDE(cw.strom_eur_mwh,2) + ' EUR/MWh') +
-    row('Erdgas (Börse)', 'Wochendurchschnitt', fmtDE(cw.ttf_eur_mwh,2) + ' EUR/MWh &nbsp;<span style="font-weight:400;font-size:11px;color:#888;">' + fmtDE(cw.ttf_ct_kwh,2) + ' ct/kWh</span>') +
+    row('Erdgas (Börse)', 'Wochendurchschnitt', fmtDE(cw.ttf_eur_mwh,2) + ' EUR/MWh') + row('', '', fmtDE(cw.ttf_ct_kwh,2) + ' ct/kWh') +
     row('Brent Rohöl', 'Wochendurchschnitt', fmtDE(cw.brent_eur_bbl,2) + ' EUR/bbl') +
     row('Kohle (Börse)', '', fmtDE(cw.coal_eur_t,2) + ' EUR/t') +
     row('Heizöl (Retail-Proxy)', '', fmtDE(cw.heizoel_eur_liter,3) + ' EUR/l') +
