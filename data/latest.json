@@ -9,40 +9,41 @@
     "brent_eur_bbl": 90.072,
     "ttf": 46.873,
     "ttf_ct_kwh": 4.687,
+    "coal_eur_t": 92.755,
     "heizoel_eur_liter": 0.9
   },
   "fuel_prices": {
-    "e5": 2.051,
-    "e10": 1.992,
-    "diesel": 1.991
+    "e5": 2.042,
+    "e10": 1.983,
+    "diesel": 1.984
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
-      "price_label": "2.05 €/L",
-      "km_for_budget": 375,
-      "cost_per_100km": 13.33
+      "price_label": "2.04 €/L",
+      "km_for_budget": 377,
+      "cost_per_100km": 13.27
     },
     "bev_home": {
       "label": "Heimladen",
       "price_label": "37 ct/kWh",
       "km_for_budget": 749,
       "cost_per_100km": 6.68,
-      "savings_pct": 49.9
+      "savings_pct": 49.7
     },
     "bev_public_ac": {
       "label": "Öffentlich AC",
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 27.1
+      "savings_pct": 26.8
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
       "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct": 13.6
+      "savings_pct": 13.2
     }
   },
   "heating_costs": {
