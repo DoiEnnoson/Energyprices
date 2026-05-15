@@ -1,15 +1,15 @@
 """
 generate_charts.py – Charts im Mockup-Stil
-Ausgabe nach data/charts/ (wird per Git committed, dann per GitHub Raw URL referenziert)
+Index-Chart: Tagesdaten Mo–Fr, kein ffill, kein Wochenschluckauf
 """
 
 import json, logging
+import matplotlib.dates as mdates
 from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 from matplotlib.lines import Line2D
 import pandas as pd
 
@@ -58,52 +58,62 @@ def save(fig, path: Path):
     log.info(f"  → {path.name}")
 
 
-# ── Chart 1: Index-Zeitreihe ───────────────────────────────────────
+# ── Chart 1: Index-Zeitreihe (Tagesdaten, Mo–Fr) ──────────────────
 
-def chart_index(idx_csv: Path, out: Path):
-    df = pd.read_csv(str(idx_csv))
+def chart_index(daily_csv: Path, out: Path):
+    df = pd.read_csv(str(daily_csv), parse_dates=["date"])
     if df.empty:
         return
 
-    series = [
-        ("strom_eur_mwh_idx", "Strom Day-Ahead DE", COL["strom"], 2.0, []),
-        ("brent_eur_bbl_idx", "Brent Rohöl",         COL["brent"], 1.5, []),
-        ("ttf_idx",           "Erdgas TTF",           COL["ttf"],   1.5, []),
-        ("coal_eur_t_idx",    "Kohle API2",           COL["coal"],  1.5, [4, 3]),
+    # Nur Börsentage (Mo–Fr) – Wochenenden raus
+    df = df[df["date"].dt.weekday < 5].copy()
+    df = df.set_index("date").sort_index()
+
+    # Preisspalten → Index 100 = erster verfügbarer Wert
+    series_def = [
+        ("strom_eur_mwh", "Strom Day-Ahead DE", COL["strom"], 2.0, []),
+        ("brent_eur_bbl", "Brent Rohöl",         COL["brent"], 1.5, []),
+        ("ttf",           "Erdgas TTF",           COL["ttf"],   1.5, []),
+        ("coal_eur_t",    "Kohle API2 ARA",       COL["coal"],  1.5, [4, 3]),
     ]
 
-    fig, ax = plt.subplots(figsize=(11, 5), dpi=110)
+    fig, ax = plt.subplots(figsize=(12, 5.5), dpi=110)
     style_ax(ax, fig)
 
-    labels = df["kw_label"].tolist()
-    x = list(range(len(labels)))
-
     legend_handles = []
-    for col, label, color, lw, dash in series:
+    for col, label, color, lw, dash in series_def:
         if col not in df.columns:
             continue
-        vals = df[col].tolist()
+        s = df[col].dropna()
+        if s.empty:
+            continue
+        base = s.iloc[0]
+        if not base or base == 0:
+            continue
+        idx = (s / base * 100)
         ls = (0, tuple(dash)) if dash else "solid"
-        ax.plot(x, vals, color=color, linewidth=lw, linestyle=ls)
-        last = df[col].dropna()
-        if not last.empty:
-            ax.text(len(last) - 1 + 0.2, last.iloc[-1],
-                    f"{last.iloc[-1]:.0f}", color=color, fontsize=8,
-                    va="center", fontfamily=MONO)
+        ax.plot(idx.index, idx.values, color=color, linewidth=lw,
+                linestyle=ls, alpha=0.9)
+        # Letzter Wert als Label
+        ax.text(idx.index[-1], idx.iloc[-1],
+                f"  {idx.iloc[-1]:.0f}", color=color, fontsize=8,
+                va="center", fontfamily=MONO)
         legend_handles.append(
-            Line2D([0], [0], color=color, linewidth=1.5, linestyle=ls, label=label)
+            Line2D([0], [0], color=color, linewidth=1.5,
+                   linestyle=ls, label=label)
         )
 
     ax.axhline(100, color=BORDER, linewidth=0.8, linestyle="--")
 
-    step = max(1, len(labels) // 10)
-    ax.set_xticks(x[::step])
-    ax.set_xticklabels(labels[::step], rotation=35, ha="right", fontsize=8, fontfamily=MONO)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d.%m."))
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=0, interval=2))
+    plt.setp(ax.xaxis.get_majorticklabels(), rotation=35, ha="right",
+             fontsize=8, fontfamily=MONO)
     for tick in ax.get_yticklabels():
         tick.set_fontfamily(MONO)
         tick.set_fontsize(8)
 
-    ax.legend(handles=legend_handles, loc="upper right", fontsize=9,
+    ax.legend(handles=legend_handles, loc="upper left", fontsize=9,
               frameon=True, facecolor=BG, edgecolor=BORDER,
               prop={"family": MONO, "size": 9})
 
@@ -120,11 +130,11 @@ def chart_vehicle(data: dict, out: Path):
 
     order_km   = ["bev_home", "ice", "bev_public_ac", "bev_public_dc"]
     order_cost = ["ice", "bev_public_dc", "bev_public_ac", "bev_home"]
-    shade      = [COL["dark"], COL["mid"], COL["light"], COL["pale"]]
+    shades     = [COL["dark"], COL["mid"], COL["light"], COL["pale"]]
 
     def get_bars(order, val_key):
         lbls, vals, cols = [], [], []
-        for key, color in zip(order, shade):
+        for key, color in zip(order, shades):
             e = vc.get(key)
             if not e:
                 continue
@@ -133,7 +143,7 @@ def chart_vehicle(data: dict, out: Path):
             cols.append(color)
         return lbls, vals, cols
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.5), dpi=110)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5), dpi=110)
     fig.patch.set_facecolor(BG)
 
     for ax, order, val_key, title, unit_fmt in [
@@ -161,7 +171,8 @@ def chart_vehicle(data: dict, out: Path):
                     bar.get_y() + bar.get_height() / 2,
                     unit_fmt.format(val),
                     va="center", ha="right",
-                    color=txt_color, fontsize=9, fontfamily=MONO, fontweight="bold")
+                    color=txt_color, fontsize=9,
+                    fontfamily=MONO, fontweight="bold")
         ax.set_xlim(0, max_val * 1.05)
 
     fig.suptitle("Opel Astra – Benziner vs. Elektro",
@@ -180,7 +191,7 @@ def chart_heating(data: dict, out: Path):
     sys_order = ["heat_pump", "gas_boiler", "oil_boiler"]
     sys_cols  = [COL["dark"], COL["mid"], COL["light"]]
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4), dpi=110)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4), dpi=110)
     fig.patch.set_facecolor(BG)
 
     for ax, (prop_key, prop_label) in zip([ax1, ax2], [
@@ -218,7 +229,8 @@ def chart_heating(data: dict, out: Path):
                     bar.get_y() + bar.get_height() / 2,
                     f"{val:.0f} €",
                     va="center", ha="right",
-                    color=txt_color, fontsize=9, fontfamily=MONO, fontweight="bold")
+                    color=txt_color, fontsize=9,
+                    fontfamily=MONO, fontweight="bold")
         ax.set_xlim(0, max_val * 1.05)
 
     fig.suptitle("Wöchentliche Heizkosten",
@@ -230,11 +242,12 @@ def chart_heating(data: dict, out: Path):
 # ── Main ───────────────────────────────────────────────────────────
 
 def main():
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)-8s %(message)s")
+    logging.basicConfig(level=logging.INFO,
+                        format="%(asctime)s  %(levelname)-8s %(message)s")
 
     charts_dir  = ROOT / "data" / "charts"
     latest_path = ROOT / C.DATA_DIR / "latest.json"
-    idx_csv     = ROOT / C.DATA_DIR / "indexed.csv"
+    daily_csv   = ROOT / C.DATA_DIR / "daily_prices.csv"
 
     if not latest_path.exists():
         log.error("latest.json fehlt")
@@ -244,8 +257,10 @@ def main():
         data = json.load(f)
 
     log.info("Erzeuge Charts …")
-    if idx_csv.exists():
-        chart_index(idx_csv, charts_dir / "chart_index.png")
+    if daily_csv.exists():
+        chart_index(daily_csv, charts_dir / "chart_index.png")
+    else:
+        log.warning("daily_prices.csv fehlt – Index-Chart übersprungen")
     chart_vehicle(data, charts_dir / "chart_vehicle.png")
     chart_heating(data, charts_dir / "chart_heating.png")
     log.info("✓ Charts fertig")
