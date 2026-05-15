@@ -92,11 +92,16 @@ def scrape_globalpetrolprices(url: str) -> float | None:
             if m2:
                 raw = m2.group(1).replace(",", ".")
                 val = float(raw)
-                if 0.01 < val < 2.0:   # Plausibilitätsprüfung: 1–200 ct/kWh
-                    ct_kwh = round(val * 100 if val < 2.0 else val, 2)
-                    if 5 < ct_kwh < 200:
+                # EUR/kWh: Strom 0.30-0.50, Gas 0.08-0.20
+                # ct/kWh:  Strom 25-60,     Gas 5-25
+                if 0.05 < val < 0.60:     # EUR/kWh Bereich
+                    ct_kwh = round(val * 100, 2)
+                    if 5 < ct_kwh < 70:
                         log.info(f"  GPP Tabelle: {ct_kwh} ct/kWh")
                         return ct_kwh
+                elif 5 < val < 70:        # bereits in ct/kWh
+                    log.info(f"  GPP Tabelle: {val} ct/kWh")
+                    return round(val, 2)
 
         log.warning(f"GPP: kein Preis-Pattern gefunden auf {url}")
         return None
