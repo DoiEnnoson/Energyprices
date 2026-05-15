@@ -25,7 +25,7 @@ TEXT   = "#1a1a1a"
 SUB    = "#888888"
 GRID   = "#ebe9e3"
 BORDER = "#d8d5cd"
-MONO   = "monospace"
+MONO   = "sans-serif"
 
 COL = {
     "strom":   "#1a1a1a",
@@ -43,7 +43,7 @@ COL = {
 def style_ax(ax, fig):
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(BG)
-    ax.tick_params(colors=SUB, labelsize=9)
+    ax.tick_params(colors=TEXT, labelsize=10)
     for sp in ["top", "right"]:  ax.spines[sp].set_visible(False)
     for sp in ["left", "bottom"]: ax.spines[sp].set_color(BORDER)
     ax.grid(True, color=GRID, linestyle="-", linewidth=0.5)
@@ -126,8 +126,7 @@ def chart_vehicle(data: dict, out: Path):
     # Reihenfolge: Tankstelle, DC Schnellladen, Wallbox, öffentl. AC
     order_km   = ["ice", "bev_public_dc", "bev_home", "bev_public_ac"]
     order_cost = ["ice", "bev_public_dc", "bev_home", "bev_public_ac"]
-    # Tankstelle=schwarz, DC=anthrazit, Wallbox=blau, AC=schiefergrau
-    shades     = ["#1a1a1a", "#374151", "#2563eb", "#64748b"]
+    shades     = [COL["dark"], COL["mid"], COL["light"], COL["pale"]]
 
     # Labels überschreiben
     label_overrides = {
@@ -161,18 +160,17 @@ def chart_vehicle(data: dict, out: Path):
         y = list(range(len(lbls)))
         bars = ax.barh(y, vals, color=cols, height=0.55)
         ax.set_yticks(y)
-        ax.set_yticklabels(lbls, fontsize=9, fontfamily=MONO)
+        ax.set_yticklabels(lbls, fontsize=11, fontfamily=MONO)
         ax.invert_yaxis()
         ax.set_title(title, fontsize=11, fontfamily="serif", pad=10, color=TEXT)
         ax.xaxis.set_visible(False)
         ax.spines["bottom"].set_visible(False)
         max_val = max(vals) if vals else 1
         for bar, val, col in zip(bars, vals, cols):
-            txt_color = "#fff" if col in ["#1a1a1a","#374151","#2563eb"] else TEXT
             ax.text(bar.get_width() - max_val * 0.02,
                     bar.get_y() + bar.get_height() / 2,
                     unit_fmt.format(val), va="center", ha="right",
-                    color=txt_color, fontsize=10, fontfamily=MONO, fontweight="bold")
+                    color="#fff", fontsize=11, fontfamily=MONO, fontweight="bold")
         ax.set_xlim(0, max_val * 1.05)
 
     fig.suptitle("Opel Astra – Benziner vs. Elektro",
@@ -188,7 +186,7 @@ def chart_heating(data: dict, out: Path):
     if not heating: return
 
     sys_order = ["heat_pump", "gas_boiler", "oil_boiler"]
-    sys_cols  = ["#1a1a1a", "#374151", "#2563eb"]  # Wärmepumpe, Gas, Öl
+    sys_cols  = ["#1a1a1a", "#b45309", "#1d4ed8"]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=120)
     fig.patch.set_facecolor(BG)
@@ -211,18 +209,17 @@ def chart_heating(data: dict, out: Path):
         y = list(range(len(lbls)))
         bars = ax.barh(y, vals, color=cols, height=0.5)
         ax.set_yticks(y)
-        ax.set_yticklabels(lbls, fontsize=9, fontfamily=MONO)
+        ax.set_yticklabels(lbls, fontsize=11, fontfamily=MONO)
         ax.invert_yaxis()
         ax.set_title(prop_label, fontsize=11, fontfamily="serif", pad=10, color=TEXT)
         ax.xaxis.set_visible(False)
         ax.spines["bottom"].set_visible(False)
         max_val = max(vals) if vals else 1
         for bar, val, col in zip(bars, vals, cols):
-            txt_color = "#fff" if col in ["#1a1a1a","#374151","#2563eb"] else TEXT
             ax.text(bar.get_width() - max_val * 0.02,
                     bar.get_y() + bar.get_height() / 2,
                     f"{val:.0f} €", va="center", ha="right",
-                    color=txt_color, fontsize=9, fontfamily=MONO, fontweight="bold")
+                    color="#fff", fontsize=11, fontfamily=MONO, fontweight="bold")
         ax.set_xlim(0, max_val * 1.05)
 
     fig.suptitle("Wöchentliche Heizkosten",
