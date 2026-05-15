@@ -63,22 +63,29 @@ def build_html(data: dict) -> str:
         return (f"<tr><td>{label}{sub_html}</td>"
                 f"<td>{fmt(val, 2, unit)}</td></tr>")
 
+    # BDEW-Periode als Monat/Jahr (z.B. "Mai '26")
+    from datetime import datetime as _dt
+    try:
+        _monate = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
+        _d = _dt.fromisoformat(today)
+        bdew_period = f"{_monate[_d.month-1]} '{str(_d.year)[2:]}"
+    except Exception:
+        bdew_period = ref.get("bdew_reference_period", "")
+
     price_rows = (
-        row("Strom Day-Ahead DE-LU", "Wochendurchschnitt", cur.get("strom_eur_mwh"), "EUR/MWh") +
-        row("Erdgas TTF",            "Wochendurchschnitt", cur.get("ttf_eur_mwh"),            "EUR/MWh") +
-        row("Erdgas TTF",            "",                   cur.get("ttf_ct_kwh"),     "ct/kWh")  +
-        row("Brent Rohöl",           "Wochendurchschnitt", cur.get("brent_eur_bbl"),  "EUR/bbl") +
-        row("Kohle API2 CIF ARA",    "EU-Importbenchmark", cur.get("coal_eur_t"),     "EUR/t")   +
-        row("Heizöl",                "Futures-Proxy, DE Retail", cur.get("heizoel_eur_liter"), "EUR/L")
+        row("Strom (Börse)",         "Wochendurchschnitt", cur.get("strom_eur_mwh"),    "EUR/MWh") +
+        row("Erdgas (Börse)",        "Wochendurchschnitt", cur.get("ttf_eur_mwh"),      "EUR/MWh") +
+        row("Erdgas (Börse)",        "",                   cur.get("ttf_ct_kwh"),        "ct/kWh")  +
+        row("Brent Rohöl",           "Wochendurchschnitt", cur.get("brent_eur_bbl"),    "EUR/bbl") +
+        row("Kohle (Börse)",         "",                   cur.get("coal_eur_t"),        "EUR/t")   +
+        row("Heizöl (Retail-Proxy)", "",                   cur.get("heizoel_eur_liter"), "EUR/l")
     )
     for label, key in [("Super E5","e5"),("E10","e10"),("Diesel","diesel")]:
         if fuel.get(key):
-            price_rows += row(label, "Bundesdurchschnitt", fuel[key], "EUR/L")
-
-    # Haushaltsstrom/-gas
+            price_rows += row(label, "Bundesdurchschnitt", fuel[key], "EUR/l")
     price_rows += (
-        row("Haushaltsstrom DE", f"BDEW {ref.get('bdew_reference_period','')}", ref.get("bdew_electricity_ct_kwh"), "ct/kWh") +
-        row("Haushaltsgas DE",   f"BDEW {ref.get('bdew_reference_period','')}", ref.get("bdew_gas_ct_kwh"), "ct/kWh")
+        row(f"Haushaltsstrom ({bdew_period})", "", ref.get("bdew_electricity_ct_kwh"), "ct/kWh") +
+        row(f"Haushaltsgas ({bdew_period})",   "", ref.get("bdew_gas_ct_kwh"),         "ct/kWh")
     )
 
     return f"""<!DOCTYPE html>
@@ -116,8 +123,10 @@ def build_html(data: dict) -> str:
   </div>
 
   <div class="footer">
-    Energy-Charts/ENTSO-E · Yahoo Finance (BZ=F, TTF=F, MTF=F, HO=F) · Tankerkönig/MTS-K ·
-    BDEW · GlobalPetrolPrices.com<br>
+    Energy-Charts/ENTSO-E (Strom Day-Ahead) · Yahoo Finance BZ=F (Brent) · Yahoo Finance TTF=F (Erdgas TTF) ·
+    OilPrice.com COAL_USD (Kohle, Spotpreis) · Yahoo Finance HO=F (Heizöl, NY Harbor ULSD als Retail-Proxy) ·
+    Tankerkönig/MTS-K (Kraftstoffpreise, Bundesdurchschnitt aus 7 Städten) ·
+    GlobalPetrolPrices.com (Haushaltsstrom & Haushaltsgas, automatisch aktualisiert) ·
     Automatisch generiert am {today}
   </div>
 
