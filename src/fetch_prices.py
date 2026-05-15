@@ -153,6 +153,14 @@ def build_daily_csv(strom: pd.Series, commodities: pd.DataFrame) -> pd.DataFrame
     df = df.sort_index()
     df.index = pd.to_datetime(df.index)
 
+    # 7-Tage gleitender Durchschnitt auf alle Preisspalten (wie Original-Script)
+    # Glättet tägliche Volatilität und negative Strompreistage
+    ROLLING = 7
+    for col in ["strom_eur_mwh", "brent_eur_bbl", "ttf_eur_mwh",
+                "coal_usd_t", "heizoel_eur_liter"]:
+        if col in df.columns:
+            df[col] = df[col].rolling(ROLLING, center=True, min_periods=4).mean().round(3)
+
     # Indexspalten berechnen
     price_cols = {
         "strom_eur_mwh":    "strom_idx",
