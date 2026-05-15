@@ -65,7 +65,7 @@ def build_html(data: dict) -> str:
 
     price_rows = (
         row("Strom Day-Ahead DE-LU", "Wochendurchschnitt", cur.get("strom_eur_mwh"), "EUR/MWh") +
-        row("Erdgas TTF",            "Wochendurchschnitt", cur.get("ttf"),            "EUR/MWh") +
+        row("Erdgas TTF",            "Wochendurchschnitt", cur.get("ttf_eur_mwh"),            "EUR/MWh") +
         row("Erdgas TTF",            "",                   cur.get("ttf_ct_kwh"),     "ct/kWh")  +
         row("Brent Rohöl",           "Wochendurchschnitt", cur.get("brent_eur_bbl"),  "EUR/bbl") +
         row("Kohle API2 CIF ARA",    "EU-Importbenchmark", cur.get("coal_eur_t"),     "EUR/t")   +
