@@ -15,18 +15,10 @@ log = logging.getLogger(__name__)
 ROOT = Path(__file__).parent.parent
 
 
-def raw_url(filename: str) -> str:
-    repo = os.environ.get("GITHUB_REPOSITORY", "")
-    if not repo:
-        return ""
-    return f"https://raw.githubusercontent.com/{repo}/main/data/charts/{filename}"
-
-
 def img(filename: str, alt: str) -> str:
-    url = raw_url(filename)
-    if not url:
-        return ""
-    return (f'<img src="{url}" alt="{alt}" width="620" '
+    """CID-Referenz – Bild wird als MIME-Attachment eingebettet (kein Gmail-Block)"""
+    cid = filename.replace(".png", "")
+    return (f'<img src="cid:{cid}" alt="{alt}" width="620" '
             f'style="width:100%;max-width:620px;display:block;margin:12px 0;" />')
 
 
