@@ -12,16 +12,16 @@
     "heizoel_eur_liter": 0.9
   },
   "fuel_prices": {
-    "e5": 2.053,
-    "e10": 1.994,
-    "diesel": 1.994
+    "e5": 2.051,
+    "e10": 1.992,
+    "diesel": 1.991
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
       "price_label": "2.05 €/L",
       "km_for_budget": 375,
-      "cost_per_100km": 13.34
+      "cost_per_100km": 13.33
     },
     "bev_home": {
       "label": "Heimladen",
