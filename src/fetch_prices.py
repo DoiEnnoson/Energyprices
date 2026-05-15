@@ -153,11 +153,17 @@ def build_daily_csv(strom: pd.Series, commodities: pd.DataFrame) -> pd.DataFrame
     df = df.sort_index()
     df.index = pd.to_datetime(df.index)
 
+    # Coal EUR-Umrechnung (braucht eurusd aus commodities)
+    if "coal_usd_t" in df.columns and "eurusd" in df.columns:
+        df["coal_eur_t"] = (df["coal_usd_t"] / df["eurusd"]).round(2)
+    elif "coal_usd_t" in df.columns:
+        df["coal_eur_t"] = (df["coal_usd_t"] / 1.10).round(2)
+
     # 7-Tage gleitender Durchschnitt auf alle Preisspalten (wie Original-Script)
     # Glättet tägliche Volatilität und negative Strompreistage
     ROLLING = 7
     for col in ["strom_eur_mwh", "brent_eur_bbl", "ttf_eur_mwh",
-                "coal_usd_t", "heizoel_eur_liter"]:
+                "coal_usd_t", "coal_eur_t", "heizoel_eur_liter"]:
         if col in df.columns:
             df[col] = df[col].rolling(ROLLING, center=True, min_periods=4).mean().round(3)
 
@@ -231,11 +237,11 @@ def current_week_summary(df: pd.DataFrame) -> dict:
         lambda d: f"{d.isocalendar().year}-KW{d.isocalendar().week:02d}"
     )
     agg_cols = [c for c in ["strom_eur_mwh", "brent_eur_bbl", "ttf_eur_mwh",
-                             "ttf_ct_kwh", "coal_usd_t", "heizoel_eur_liter"]
+                             "ttf_ct_kwh", "coal_usd_t", "coal_eur_t", "heizoel_eur_liter"]
                 if c in bdays.columns]
     weekly = bdays.groupby("kw_label")[agg_cols].mean().round(3)
     # Letzte Woche mit Börsendaten
-    check_cols = [c for c in ["brent_eur_bbl", "ttf_eur_mwh"] if c in weekly.columns]
+    check_cols = [c for c in ["brent_eur_bbl", "ttf_eur_mwh", "strom_eur_mwh"] if c in weekly.columns]
     valid = weekly.dropna(subset=check_cols, how="all") if check_cols else weekly
     if valid.empty:
         return {}
