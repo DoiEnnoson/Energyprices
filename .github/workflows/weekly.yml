@@ -32,6 +32,7 @@ jobs:
           GMAIL_CONFIG:         ${{ secrets.GMAIL_CONFIG }}
           GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}
           TANKERKOENIG_API_KEY: ${{ secrets.TANKERKOENIG_API_KEY }}
+          OILPRICE_API:         ${{ secrets.OILPRICE_API }}
           GITHUB_REPOSITORY:    ${{ github.repository }}
 
       - name: Charts und Daten committen
