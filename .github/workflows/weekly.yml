@@ -26,14 +26,29 @@ jobs:
       - name: Abhängigkeiten installieren
         run: pip install -r requirements.txt
 
+      - name: Debug – OilPrice API
+        continue-on-error: true
+        env:
+          OILPRICE_API: ${{ secrets.OILPRICE_API }}
+        run: |
+          echo "=== Key gesetzt? ==="
+          [ -z "$OILPRICE_API" ] && echo "FEHLT" || echo "Ja (${OILPRICE_API:0:8}...)"
+
+          echo "=== Aktueller Kohlepreis ==="
+          curl -s -H "Authorization: Token $OILPRICE_API" \
+            "https://api.oilpriceapi.com/v1/prices/latest?by_code=COAL_USD" | python3 -m json.tool
+
+          echo "=== Historisch ab 1.1.2026 (ersten 3 Einträge) ==="
+          curl -s -H "Authorization: Token $OILPRICE_API" \
+            "https://api.oilpriceapi.com/v1/prices/historical?by_code=COAL_USD&start_at=2026-01-01&end_at=2026-01-31&interval=daily" \
+            | python3 -c "import sys,json; d=json.load(sys.stdin); prices=d.get('data',{}).get('prices',[]); print(f'{len(prices)} Einträge'); [print(p) for p in prices[:3]]"
+
       - name: Pipeline ausführen (ohne E-Mail)
         run: python run.py --no-email
         env:
-          GMAIL_CONFIG:         ${{ secrets.GMAIL_CONFIG }}
           GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}
           TANKERKOENIG_API_KEY: ${{ secrets.TANKERKOENIG_API_KEY }}
           OILPRICE_API:         ${{ secrets.OILPRICE_API }}
-          GITHUB_REPOSITORY:    ${{ github.repository }}
 
       - name: Charts und Daten committen
         run: |
@@ -47,5 +62,4 @@ jobs:
       - name: E-Mail senden
         run: python src/send_email.py
         env:
-          GMAIL_CONFIG:      ${{ secrets.GMAIL_CONFIG }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+          GMAIL_CONFIG: ${{ secrets.GMAIL_CONFIG }}
