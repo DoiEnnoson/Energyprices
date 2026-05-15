@@ -1,8 +1,8 @@
-name: Weekly Energy Newsletter
+name: Daily Energy Newsletter
 
 on:
   schedule:
-    - cron: "23 6 * * *"
+    - cron: "23 4 * * *"
   workflow_dispatch:
 
 permissions:
