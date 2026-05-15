@@ -113,7 +113,7 @@ def build_html(data: dict) -> str:
   </div>
 
   <div class="section">
-    <div class="slabel">Mobilität &nbsp;·&nbsp; Opel Astra</div>
+    <div class="slabel">Mobilität &nbsp;·&nbsp; Reichweite und Kosten Benziner vs. E-Auto</div>
     {img("chart_vehicle.png", "Fahrzeugvergleich")}
   </div>
 
