@@ -1,51 +1,51 @@
 {
   "meta": {
-    "generated": "2026-05-20",
+    "generated": "2026-05-21",
     "current_week": "2026-KW21",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 110.014,
-    "brent_eur_bbl": null,
-    "ttf_eur_mwh": null,
-    "ttf_ct_kwh": 5.104,
-    "coal_usd_t": 109.302,
-    "coal_eur_t": null,
-    "heizoel_eur_liter": null,
+    "strom_eur_mwh": 112.668,
+    "brent_eur_bbl": 94.042,
+    "ttf_eur_mwh": 50.415,
+    "ttf_ct_kwh": 5.05,
+    "coal_usd_t": 110.014,
+    "coal_eur_t": 94.482,
+    "heizoel_eur_liter": 0.924,
     "kw_label": "2026-KW21"
   },
   "fuel_prices": {
-    "e5": 2.024,
-    "e10": 1.965,
-    "diesel": 1.943
+    "e5": 2.008,
+    "e10": 1.949,
+    "diesel": 1.915
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
-      "price_label": "2.02 €/L",
-      "km_for_budget": 380,
-      "cost_per_100km": 13.16
+      "price_label": "2.01 €/L",
+      "km_for_budget": 383,
+      "cost_per_100km": 13.05
     },
     "bev_home": {
       "label": "Heimladen",
       "price_label": "37 ct/kWh",
       "km_for_budget": 749,
       "cost_per_100km": 6.68,
-      "savings_pct": 49.2
+      "savings_pct": 48.8
     },
     "bev_public_ac": {
       "label": "Öffentlich AC",
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 26.1
+      "savings_pct": 25.5
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
       "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct": 12.5
+      "savings_pct": 11.7
     }
   },
   "heating_costs": {
