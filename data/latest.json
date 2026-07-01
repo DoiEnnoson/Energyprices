@@ -1,49 +1,51 @@
 {
   "meta": {
-    "generated": "2026-06-30",
+    "generated": "2026-07-01",
     "current_week": "2026-KW27",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 128.718,
+    "strom_eur_mwh": 135.599,
     "brent_eur_bbl": null,
     "ttf_eur_mwh": null,
-    "ttf_ct_kwh": 4.256,
+    "ttf_ct_kwh": 4.3,
+    "coal_usd_t": 120.97,
+    "coal_eur_t": null,
     "heizoel_eur_liter": null,
     "kw_label": "2026-KW27"
   },
   "fuel_prices": {
-    "e5": 1.883,
-    "e10": 1.824,
-    "diesel": 1.754
+    "e5": 2.043,
+    "e10": 1.983,
+    "diesel": 1.942
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
-      "price_label": "1.88 €/L",
-      "km_for_budget": 409,
-      "cost_per_100km": 12.24
+      "price_label": "2.04 €/L",
+      "km_for_budget": 377,
+      "cost_per_100km": 13.28
     },
     "bev_home": {
       "label": "Heimladen",
-      "price_label": "37 ct/kWh",
-      "km_for_budget": 749,
-      "cost_per_100km": 6.68,
-      "savings_pct": 45.4
+      "price_label": "35 ct/kWh",
+      "km_for_budget": 803,
+      "cost_per_100km": 6.23,
+      "savings_pct": 53.1
     },
     "bev_public_ac": {
       "label": "Öffentlich AC",
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 20.6
+      "savings_pct": 26.8
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
       "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct": 5.9
+      "savings_pct": 13.3
     }
   },
   "heating_costs": {
@@ -52,7 +54,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 73.14
+          "weekly_cost_eur": 96.35
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -60,7 +62,7 @@
         },
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
-          "weekly_cost_eur": 30.58
+          "weekly_cost_eur": 28.52
         }
       }
     },
@@ -69,7 +71,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 39.01
+          "weekly_cost_eur": 51.39
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -77,15 +79,15 @@
         },
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
-          "weekly_cost_eur": 16.31
+          "weekly_cost_eur": 15.21
         }
       }
     }
   },
   "reference": {
-    "bdew_electricity_ct_kwh": 37.1,
-    "bdew_gas_ct_kwh": 22.06,
-    "bdew_reference_period": "2026-06 (auto)",
+    "bdew_electricity_ct_kwh": 34.6,
+    "bdew_gas_ct_kwh": 29.06,
+    "bdew_reference_period": "2026-07 (auto)",
     "public_charging_ac_ct_kwh": 54.0,
     "public_charging_dc_ct_kwh": 64.0
   }
