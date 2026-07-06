@@ -1,23 +1,23 @@
 {
   "meta": {
-    "generated": "2026-07-05",
-    "current_week": "2026-KW27",
+    "generated": "2026-07-06",
+    "current_week": "2026-KW28",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 110.397,
-    "brent_eur_bbl": 63.359,
-    "ttf_eur_mwh": 43.312,
-    "ttf_ct_kwh": 4.341,
-    "coal_usd_t": 119.785,
-    "coal_eur_t": 103.702,
-    "heizoel_eur_liter": 0.754,
-    "kw_label": "2026-KW27"
+    "strom_eur_mwh": 71.13,
+    "brent_eur_bbl": null,
+    "ttf_eur_mwh": null,
+    "ttf_ct_kwh": null,
+    "coal_usd_t": null,
+    "coal_eur_t": null,
+    "heizoel_eur_liter": null,
+    "kw_label": "2026-KW28"
   },
   "fuel_prices": {
-    "e5": 2.025,
-    "e10": 1.966,
-    "diesel": 1.895
+    "e5": 2.024,
+    "e10": 1.964,
+    "diesel": 1.888
   },
   "vehicle_comparison": {
     "ice": {
