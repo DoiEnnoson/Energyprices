@@ -1,30 +1,30 @@
 {
   "meta": {
-    "generated": "2026-07-13",
+    "generated": "2026-07-14",
     "current_week": "2026-KW29",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 103.152,
+    "strom_eur_mwh": 105.272,
     "brent_eur_bbl": null,
     "ttf_eur_mwh": null,
-    "ttf_ct_kwh": null,
-    "coal_usd_t": null,
+    "ttf_ct_kwh": 5.128,
+    "coal_usd_t": 117.812,
     "coal_eur_t": null,
     "heizoel_eur_liter": null,
     "kw_label": "2026-KW29"
   },
   "fuel_prices": {
-    "e5": 2.077,
-    "e10": 2.018,
-    "diesel": 1.987
+    "e5": 2.078,
+    "e10": 2.019,
+    "diesel": 2.0
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
       "price_label": "2.08 €/L",
       "km_for_budget": 370,
-      "cost_per_100km": 13.5
+      "cost_per_100km": 13.51
     },
     "bev_home": {
       "label": "Heimladen",
@@ -38,7 +38,7 @@
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 28.0
+      "savings_pct": 28.1
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
