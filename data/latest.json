@@ -1,23 +1,23 @@
 {
   "meta": {
-    "generated": "2026-09-09",
+    "generated": "2026-09-10",
     "current_week": "2026-KW37",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 123.797,
+    "strom_eur_mwh": 141.174,
     "brent_eur_bbl": null,
     "ttf_eur_mwh": null,
-    "ttf_ct_kwh": 7.584,
-    "coal_usd_t": 137.882,
-    "coal_eur_t": null,
+    "ttf_ct_kwh": 7.754,
+    "coal_usd_t": 138.108,
+    "coal_eur_t": 118.383,
     "heizoel_eur_liter": null,
     "kw_label": "2026-KW37"
   },
   "fuel_prices": {
     "e5": 2.273,
     "e10": 2.215,
-    "diesel": 2.282
+    "diesel": 2.29
   },
   "vehicle_comparison": {
     "ice": {
