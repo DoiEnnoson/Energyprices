@@ -299,6 +299,11 @@ function renderChart(csvText) {
   // X-Achse: alle 10 Tage ein Label
   const step = Math.max(1, Math.floor(labels.length / 12));
 
+  // Y-Achse: dynamisch aus Daten berechnen, auf 10er gerundet mit Puffer
+  const allVals = [...strom, ...brent, ...ttf, ...heizoel].filter(v => v != null);
+  const yMin = allVals.length ? Math.floor(Math.min(...allVals) / 10) * 10 - 10 : 50;
+  const yMax = allVals.length ? Math.ceil(Math.max(...allVals)  / 10) * 10 + 10 : 300;
+
   if (idxChart) { idxChart.destroy(); }
   idxChart = new Chart(document.getElementById('idxChart'), {
     type: 'line',
@@ -332,7 +337,7 @@ function renderChart(csvText) {
         y:{
           grid:{ color:'#ebe9e3' },
           ticks:{ font:{size:10}, color:'#1a1a1a' },
-          min: 60, max: 250
+          min: yMin, max: yMax
         }
       }
     }
