@@ -1,51 +1,51 @@
 {
   "meta": {
-    "generated": "2026-10-01",
+    "generated": "2026-10-02",
     "current_week": "2026-KW40",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 164.445,
-    "brent_eur_bbl": 91.435,
-    "ttf_eur_mwh": 71.92,
-    "ttf_ct_kwh": 7.187,
-    "coal_usd_t": 137.819,
-    "coal_eur_t": 121.218,
-    "heizoel_eur_liter": 1.121,
+    "strom_eur_mwh": 170.178,
+    "brent_eur_bbl": 91.118,
+    "ttf_eur_mwh": 72.371,
+    "ttf_ct_kwh": 7.239,
+    "coal_usd_t": 138.647,
+    "coal_eur_t": 122.251,
+    "heizoel_eur_liter": 1.118,
     "kw_label": "2026-KW40"
   },
   "fuel_prices": {
-    "e5": 2.285,
-    "e10": 2.226,
-    "diesel": 2.376
+    "e5": 2.318,
+    "e10": 2.259,
+    "diesel": 2.388
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
-      "price_label": "2.29 €/L",
-      "km_for_budget": 337,
-      "cost_per_100km": 14.85
+      "price_label": "2.32 €/L",
+      "km_for_budget": 332,
+      "cost_per_100km": 15.07
     },
     "bev_home": {
       "label": "Heimladen",
-      "price_label": "35 ct/kWh",
-      "km_for_budget": 803,
-      "cost_per_100km": 6.23,
-      "savings_pct": 58.0
+      "price_label": "36 ct/kWh",
+      "km_for_budget": 767,
+      "cost_per_100km": 6.52,
+      "savings_pct": 56.7
     },
     "bev_public_ac": {
       "label": "Öffentlich AC",
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 34.5
+      "savings_pct": 35.5
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
       "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct": 22.4
+      "savings_pct": 23.6
     }
   },
   "heating_costs": {
@@ -62,7 +62,7 @@
         },
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
-          "weekly_cost_eur": 28.52
+          "weekly_cost_eur": 29.84
         }
       }
     },
@@ -79,13 +79,13 @@
         },
         "heat_pump": {
           "label": "Wärmepumpe (COP 3,5)",
-          "weekly_cost_eur": 15.21
+          "weekly_cost_eur": 15.91
         }
       }
     }
   },
   "reference": {
-    "bdew_electricity_ct_kwh": 34.6,
+    "bdew_electricity_ct_kwh": 36.2,
     "bdew_gas_ct_kwh": 28.09,
     "bdew_reference_period": "2026-10 (auto)",
     "public_charging_ac_ct_kwh": 54.0,
