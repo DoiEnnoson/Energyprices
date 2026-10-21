@@ -1,29 +1,29 @@
 {
   "meta": {
-    "generated": "2026-10-20",
+    "generated": "2026-10-21",
     "current_week": "2026-KW43",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 189.272,
+    "strom_eur_mwh": 194.916,
     "brent_eur_bbl": null,
     "ttf_eur_mwh": null,
-    "ttf_ct_kwh": 8.804,
-    "coal_usd_t": 145.475,
+    "ttf_ct_kwh": 8.655,
+    "coal_usd_t": 145.906,
     "coal_eur_t": null,
     "heizoel_eur_liter": null,
     "kw_label": "2026-KW43"
   },
   "fuel_prices": {
-    "e5": 2.098,
-    "e10": 2.039,
-    "diesel": 2.187
+    "e5": 2.099,
+    "e10": 2.041,
+    "diesel": 2.205
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
       "price_label": "2.10 €/L",
-      "km_for_budget": 367,
+      "km_for_budget": 366,
       "cost_per_100km": 13.64
     },
     "bev_home": {
@@ -54,7 +54,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 40.12
+          "weekly_cost_eur": 63.33
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -71,7 +71,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 21.4
+          "weekly_cost_eur": 33.78
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -86,7 +86,7 @@
   },
   "reference": {
     "bdew_electricity_ct_kwh": 36.2,
-    "bdew_gas_ct_kwh": 12.1,
+    "bdew_gas_ct_kwh": 19.1,
     "bdew_reference_period": "2026-10 (auto)",
     "public_charging_ac_ct_kwh": 54.0,
     "public_charging_dc_ct_kwh": 64.0
