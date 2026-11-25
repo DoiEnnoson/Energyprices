@@ -1,49 +1,49 @@
 {
   "meta": {
-    "generated": "2026-11-24",
+    "generated": "2026-11-25",
     "current_week": "2026-KW48",
     "base_date": "2026-01-01"
   },
   "current_week": {
-    "strom_eur_mwh": 220.92,
+    "strom_eur_mwh": 229.118,
     "brent_eur_bbl": null,
     "ttf_eur_mwh": null,
-    "ttf_ct_kwh": 8.974,
+    "ttf_ct_kwh": 9.07,
     "heizoel_eur_liter": null,
     "kw_label": "2026-KW48"
   },
   "fuel_prices": {
-    "e5": 1.891,
-    "e10": 1.833,
-    "diesel": 2.065
+    "e5": 1.919,
+    "e10": 1.861,
+    "diesel": 2.081
   },
   "vehicle_comparison": {
     "ice": {
       "label": "Benziner",
-      "price_label": "1.89 €/L",
-      "km_for_budget": 407,
-      "cost_per_100km": 12.29
+      "price_label": "1.92 €/L",
+      "km_for_budget": 401,
+      "cost_per_100km": 12.47
     },
     "bev_home": {
       "label": "Heimladen",
       "price_label": "36 ct/kWh",
       "km_for_budget": 767,
       "cost_per_100km": 6.52,
-      "savings_pct": 46.9
+      "savings_pct": 47.7
     },
     "bev_public_ac": {
       "label": "Öffentlich AC",
       "price_label": "54 ct/kWh",
       "km_for_budget": 514,
       "cost_per_100km": 9.72,
-      "savings_pct": 20.9
+      "savings_pct": 22.1
     },
     "bev_public_dc": {
       "label": "Schnellladen DC",
       "price_label": "64 ct/kWh",
       "km_for_budget": 434,
       "cost_per_100km": 11.52,
-      "savings_pct": 6.3
+      "savings_pct": 7.6
     }
   },
   "heating_costs": {
@@ -52,7 +52,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 53.42
+          "weekly_cost_eur": 76.62
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -69,7 +69,7 @@
       "systems": {
         "gas_boiler": {
           "label": "Gasheizung",
-          "weekly_cost_eur": 28.49
+          "weekly_cost_eur": 40.87
         },
         "oil_boiler": {
           "label": "Ölheizung",
@@ -84,7 +84,7 @@
   },
   "reference": {
     "bdew_electricity_ct_kwh": 36.2,
-    "bdew_gas_ct_kwh": 16.11,
+    "bdew_gas_ct_kwh": 23.11,
     "bdew_reference_period": "2026-11 (auto)",
     "public_charging_ac_ct_kwh": 54.0,
     "public_charging_dc_ct_kwh": 64.0
